@@ -1,0 +1,119 @@
+
+Step 0 : Basic environment
+--------------------------
+KeOLA was developed on Python 2.7 in a Linux enviroment.  However, it may be
+backwards compatible (2.6, etc) to a certain extent.
+
+
+Step 1 : Install MongoDB
+------------------------
+See: http://www.mongodb.org/display/DOCS/Quickstart for detailed instructions
+
+MongoDB can install and run as a service or be run exclusively in user space.
+
+Start a MongoDB server instance for use by our scripts. No other configuration
+of the server is requred for basic functionality.
+
+The scripts here assume MongoDB is running on localhost and on the default 
+port.  If you set up your instance differently, you will have to modify 
+the pymongo Connection() lines in the scripts
+
+
+Step 2 : Install pip or easy_install
+------------------------------------
+pip and easy_install are tools to help install python packages we need.  The
+author leans towards pip, so that's what is written about here.  Similar
+steps can be followed with easy_install.
+
+In Debian / Ubuntu, installing PIP is as easy as:
+apt-get install python-pip
+
+Similarly on Redhat / CentOS, etc it should be:
+yum install python-pip
+
+... and so on.  If your distrobution doesn't have a package, see manual install 
+instructions at: http://www.pip-installer.org/en/latest/installing.html
+
+
+Step 3 : Get requried packages
+------------------------------
+We need a few packages to get eveything running: pymongo, pyfits, and flask
+
+pip install pymongo
+pip install pyfits
+pip install flask
+
+... and hopefully that's it!
+
+
+Step 4 : Host the web interface or start it standalone
+--------------------------------------------------------------------------
+The web interface can either be hosted by a dedicated webserver which is
+python enabled, or run standalone. Many options are available for hosting
+python based sites, Apache + WSGI is what the author uses.
+
+ - - - - - - -
+For Apache + WSGI, look at http://flask.pocoo.org/docs/deploying/mod_wsgi/
+
+I have included versions of the config files adapted from the above link to 
+work for my server in the wsgi/ directory.  Assuming you have mod_wsgi 
+installed and your Apache2 installation is setup for virtual hosts
+ - Copy server.wsgi into the webInterface/ directory so it sits next to server.py
+ - Change the path in server.wsgi to be the absolute path to the above directory
+ - Adapt the keola-vhost.conf Apache config file to your environment
+   - Change the ServerName to the domain to be hosted from
+   - Replace www-data with whatever user and group your Apache uses
+   - Replace /KeOLA/webInterface/ with the absolute path where server.py is
+   - Create a directory where you want logs stored, and change the log lines
+   - If you want static files hosted elsewhere, be sure /static/ points there
+ - Include this block into your vhost config.  ( On the author's machine
+   this involves adding the file to a sites-available directory and then
+   linking to it in the sites-enabled directory.  Other machines might
+   store vhost configurations differently, for instance in a single file
+   that you would append the VirtualHost block into. )
+ - Restart Apache
+
+ - - - - - - -
+Basic steps involved to get it running on most other web servers:
+ - Point the webserver's python interpreter at server.py 
+ - Keep the json_util.py and template files relative to the script
+ - Move the static files to wherever your webserver will host them, 
+   make sure the /static url hosts out of this directory.
+
+ - - - - - - -
+For standalone, simply move to the webInterface/ directory and run
+python server.py
+
+In this mode, the script will run a server that will listen on port 5000 and 
+only receive requests from localhost.  For production, you will want to disable 
+debug mode and allow access from other hosts.  
+See: http://flask.pocoo.org/docs/quickstart/#debug-mode
+
+
+Step 5 : Populate initial data
+------------------------------------
+python utilities/dump_initial_data.py
+
+This installs the instrument configurations and FITS grid view configurations.
+
+
+step 6 : Start the data monitor
+-------------------------------
+python monitor/dataMon.py 
+
+Run it in a screen or with a trailing & to put it in the background.
+
+Optimally, this would be run on server startup, redirect output to logs,
+keep-alive, etc.  This isn't built into the script yet, but standard
+shell based techniques could be used to acheive the same effect.
+
+
+-------------------------------
+
+That's it!  You should now be able to go to the site that you configured
+(or http://localhost:5000/ if running standalone), start a new log,
+insert data into the directory specified in the log, and the monitoring
+script should extract all the FITS header information from each file 
+as they are added, and they should show up in real time on the front end! 
+
+For additional questions / information: ian@cunnyngham.net

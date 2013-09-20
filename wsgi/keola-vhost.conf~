@@ -1,0 +1,21 @@
+<VirtualHost *:80>
+    WSGIDaemonProcess application user=www-data group=www-data threads=5
+    WSGIScriptAlias / /home/keola/obsMonitor/webInterface/server.wsgi
+    ServerName observinglogs
+    CustomLog "/home/keola/obsMonitor/logs/access.log" combined
+    ErrorLog "/home/keola/obsMonitor/logs/error.log"
+
+    <Directory /home/keola/obsMonitor/webInterface/>
+        WSGIProcessGroup application
+        WSGIApplicationGroup %{GLOBAL}
+        Order deny,allow
+        Allow from all
+    </Directory>
+
+    Alias /static/ /home/keola/obsMonitor/webInterface/static/
+    <Directory /home/keola/obsMonitor/webInterface/static/>
+	Order deny,allow
+	Allow from all
+    </Directory>
+
+</VirtualHost>

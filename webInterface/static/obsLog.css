@@ -1,0 +1,251 @@
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+body {
+    font-family: 'Open Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    background-image:url('/static/images/KECKsymbolBG.jpg');
+    background-repeat:no-repeat;
+}
+
+#KeOLA {
+    display:block;
+    border-bottom: 1px solid #ccc;
+    -webkit-box-shadow: rgba(128, 128, 128, 0.4) 0px -10px 10px 0 inset;
+    -moz-box-shadow: rgba(128, 128, 128, 0.4) 0px -10px 10px 0 inset;
+    -ms-box-shadow: rgba(128, 128, 128, 0.4) 0px -10px 10px 0 inset;
+    -o-box-shadow: rgba(128, 128, 128, 0.4) 0px -10px 10px 0 inset;
+    box-shadow: rgba(192, 192, 192, 0.3) 0px -15px 15px 0 inset;
+}
+h1 {
+    margin:0;
+    padding:.25em;
+    display:inline-block;
+    width:450px;
+	font-size: 20px;
+	font-weight: 600;
+    letter-spacing: 2px;
+	text-align: left;
+    font-style:underline;
+}
+h1 a:link, h1 a:visited {color: #444; text-decoration:none;}
+h1 a:hover, h1 a:active {color: #000; text-decoration:underline;}
+#goAdmin {
+    display:inline-block;
+    width:200px;
+    font-weight: bold;
+}
+#goAdmin a:link, #showhideLink:link {
+    color: #444;
+}
+#goAdmin a:visited, #showhideLink:visited {
+    color: #666;
+}
+#goAdmin a:hover, #showhideLink:hover {
+    color: #000;
+}
+h2 {
+    font-weight:700;
+    color: #333;
+    margin:-.4em 0 .5em .3em;
+    padding:0;
+}
+
+.toggle {
+    display: inline-block;
+    padding-left: 1.5em;
+}
+
+.toggle.expand {
+    background-image: url('/static/images/ExpandArrow.png');
+    background-repeat: no-repeat;
+    background-position: left;
+}
+
+.toggle.collapse {
+    background-image: url('/static/images/CollapseArrow.png');
+    background-repeat: no-repeat;
+    background-position: left;
+}
+
+.groupSpacer {
+    display:inline-block;
+    height:1px;
+    width:1.5em;
+}
+
+.slick-cell.selected {
+  background-color: #D0DCEB;
+}
+
+.slick-row.odd {
+  background: #fafafa;
+}
+
+    .contextMenu {
+      background: LightGray;
+      border: 1px solid gray;
+      padding: 2px;
+      min-width: 100px;
+      -moz-box-shadow: 2px 2px 2px silver;
+      -webkit-box-shadow: 2px 2px 2px silver;
+      z-index: 99999;
+      display:none;
+      position:absolute;
+    }
+
+    .contextMenu li {
+      padding: 4px 4px 4px 14px;
+      list-style: none;
+      cursor: pointer;
+    }
+
+    .contextMenu li:hover {
+      background-color: DarkGray;
+    }
+
+#grid{display:none;margin-bottom:1em;}
+#entryView,#grid, #weather {position:fixed; top:0;bottom:0;left:0;right:0;}
+#entryView, #weather { 
+    border-top: 1px solid #aaa;
+    padding: 0px;
+    background: #fff;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.2) 2px 2px 6px 0 inset;
+    -moz-box-shadow: rgba(0, 0, 0, 0.2) 2px 2px 6px 0 inset;
+    -ms-box-shadow: rgba(0, 0, 0, 0.2) 2px 2px 6px 0 inset;
+    -o-box-shadow: rgba(0, 0, 0, 0.2) 2px 2px 6px 0 inset;
+    box-shadow: rgba(0, 0, 0, 0.2) 2px 2px 6px 0 inset;
+}
+#entry-list { height:100%; margin: 0 0 0 1em; overflow-y: scroll;}
+#weatherFrame { height:100%; width:100%; }
+
+.logCreator input, .logCreator select, .logCreator span { float: right; width: 80%; }
+.logCreator label {
+    float: left;
+    display: block;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 7px 0px 7px 0px;
+    width:30%;
+}
+
+.error {
+    color: #f00;
+}
+
+#obslogapp{ display:none; padding: 0; }
+.b{font-weight:800}
+
+.activeLogButton {
+    text-align: left;
+    padding: 0;
+    margin: 0 0 .25em 2em;
+    width: 90%;
+}
+
+ul { margin: 0; padding: 0; }
+ul li { margin: 0; padding: 1em 0 .7em 0; list-style: none; border-bottom: 2px dotted #cacaca; }
+ul li.last { border: none; }
+
+.shadow {
+    -webkit-box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 6px 0 ;
+    -moz-box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 6px 0 ;
+    -ms-box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 6px 0 ;
+    -o-box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 6px 0 ;
+    box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 6px 0 ;
+}
+
+.rBorder {
+    border: 1px solid #999;
+    border-collapse: collapse;
+}
+
+.rBorder th {
+    text-align: right;
+    background: #ddd; 
+    padding-right: 1em;
+    padding-left: .5em;
+    border-bottom: 1px dotted #999;
+}
+.rBorder td {
+    padding-left: 1em;
+    padding-right: .5em;
+    background: #f0f0f0;
+    border-bottom: 1px dotted #999;
+}
+.horizontal th, .horizontal td {
+    text-align: center;
+    padding-right: .5em;
+    padding-left: .5em;
+    border-right: 1px dotted #999;
+    border-bottom: none;
+}
+
+#tabs{ margin: 0; }
+#control-tabs{ padding: 0;}
+
+#logInfo,#settings,#print {
+    padding:.5em;
+    background: #cdcfd1;
+    background-image:url("/static/images/ToolBG.jpg");
+    background-repeat:no-repeat;
+    background-position:right top;
+    border-bottom: 2px solid #aaa;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 6px 0 inset;
+    -moz-box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 6px 0 inset;
+    -ms-box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 6px 0 inset;
+    -o-box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 6px 0 inset;
+    box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 6px 0 inset;
+}
+
+#dataView{padding:0;margin:0;}
+#grid{display:none;}
+#entryView,#grid, #weather {position:fixed; top:0;bottom:0;left:0;right:0;}
+#entryView, #weather { 
+    border-top: 1px solid #aaa;
+    padding: 0px;
+    background: #fff;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.2) 2px 2px 6px 0 inset;
+    -moz-box-shadow: rgba(0, 0, 0, 0.2) 2px 2px 6px 0 inset;
+    -ms-box-shadow: rgba(0, 0, 0, 0.2) 2px 2px 6px 0 inset;
+    -o-box-shadow: rgba(0, 0, 0, 0.2) 2px 2px 6px 0 inset;
+    box-shadow: rgba(0, 0, 0, 0.2) 2px 2px 6px 0 inset;
+}
+#entry-list { height:100%; margin: 0 0 0 1em; overflow-y: scroll;}
+#weatherFrame { height:100%; width:100%; }
+
+#entryComment{ background:#fff; border-top: 1px solid #777; padding: .5em; position:fixed; bottom:0;left:0;right:0; }
+#entryComment button{float:right;}
+#entryComment .expandingArea {
+    margin-right:165px;
+}
+
+.logCreator input, .logCreator select { float: right; width: 80%; }
+.logCreator label {
+    float: left;
+    display: block;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 7px 0px 7px 0px;
+    width:30%;
+}
+
+#obslogapp{ display:none; padding: 0; }
+
+#logGrid{ 
+    height: 500px ;
+    color: #000;
+}
+.center{
+    text-align: center;
+}
+.cellLink{
+    text-align:center;
+    text-decoration: underline;
+}
+.cellLink:hover{
+    color: #666;
+    font-weight: bold;
+}

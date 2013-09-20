@@ -1,0 +1,204 @@
+
+### obsLog.instruments ###
+
+# TODO: dataDir should be computed on retreival of instrument list, not stored
+
+[{'_id': ObjectId('4fff7057bd92da5875000001'),
+  'dataDir': '/home/icunnyngham/monDir/LRIS/',
+  'name': 'LRIS'},
+ {'_id': ObjectId('4fff7068bd92da5875000003'),
+  'dataDir': '/home/icunnyngham/monDir/DEIMOS/',
+  'name': 'DEIMOS'}]
+
+
+### obsLog.fitsViews ###
+
+# A default, catch all view called "filenames",
+# a view for DEIMOS
+# and a more sophisticated view for "LRIS" involving conditional attributes
+
+[{'_id': ObjectId('4fff7047bd92da5875000000'),
+  'instrument': 'all',
+  'name': 'filenames',
+  'view': [{'fitsAttr': ['filename'],
+    'name': 'Filename',
+    'width': 200}]},
+ {'_id': ObjectId('4fff7057bd92da5875000002'),
+  'instrument': 'LRIS',
+  'name': 'default',
+  'view': [{'fitsAttr': ['filename'], 'name': 'Filename', 'width': 150},
+   {'fitsAttr': ['headers', 0, 'OBJECT'],
+    'name': 'object',
+    'width': 150},
+   {'fitsAttr': ['headers', 0, 'TTIME'], 'name': 't (s)', 'width': 40},
+   {'fitsAttr': ['headers', 0, 'UTC'], 'name': 'UTC', 'width': 120},
+   {'fitsAttr': ['headers', 0, 'AIRMASS'],
+    'name': 'Airmass',
+    'width': 120},
+   {'fitsAttr': ['headers', 0, 'HA'], 'name': 'HA', 'width': 120},
+   {'fitsAttr': ['headers', 0, 'SLITNAME'],
+    'name': 'Slitmask',
+    'width': 120},
+   {'fitsAttr': ['headers', 0, 'DICHNAME'],
+    'name': 'Dichroic',
+    'width': 120},
+   {'fitsAttr': ['headers', 0, 'GRISNAME'],
+    'name': 'Grism',
+    'width': 120},
+   {'fitsAttr': ['headers', 0, 'GRANAME'],
+    'name': 'Grating',
+    'width': 120},
+   {'condAttr': {'LRIS': ['headers', 0, 'REDFILT'],
+     'LRISBLUE': ['headers', 0, 'BLUFILT'],
+     'conditionAttr': ['headers', 0, 'INSTRUME'],
+     'tag': 'LRISFILTER'},
+    'name': 'Filter',
+    'width': 120},
+   {'condAttr': {'LRIS': ['headers', 0, 'REDFOCUS'],
+     'LRISBLUE': ['headers', 0, 'BLUFOCUS'],
+     'conditionAttr': ['headers', 0, 'INSTRUME'],
+     'tag': 'LRISFOCUS'},
+    'name': 'Focus',
+    'width': 120}]},
+ {'_id': ObjectId('5006637ebd92da1b7825bf12'),
+  'instrument': 'DEIMOS',
+  'name': 'deimos',
+  'view': [{'fitsAttr': ['filename'], 'name': 'Filename', 'width': 150},
+   {'fitsAttr': ['headers', 0, 'OBJECT'],
+    'name': 'Object',
+    'width': 150},
+   {'fitsAttr': ['headers', 0, 'RA'], 'name': 'RA', 'width': 120},
+   {'fitsAttr': ['headers', 0, 'DEC'], 'name': 'DEC', 'width': 120},
+   {'fitsAttr': ['headers', 0, 'LAMPS'], 'name': 'Lamps', 'width': 150},
+   {'fitsAttr': ['headers', 0, 'SLMSKNAM'],
+    'name': 'Slitmask',
+    'width': 150},
+   {'fitsAttr': ['headers', 0, 'GRATENAM'],
+    'name': 'Grating',
+    'width': 150},
+   {'fitsAttr': ['headers', 0, 'G3TLTWAV'],
+    'name': 'Wavelength',
+    'width': 150},
+   {'fitsAttr': ['headers', 0, 'DWFILNAM'],
+    'name': 'Filter',
+    'width': 150},
+   {'fitsAttr': ['headers', 0, 'TTIME'],
+    'name': 'Exp. Time',
+    'width': 120},
+   {'fitsAttr': ['headers', 0, 'FCSMODE'],
+    'name': 'Fcs',
+    'width': 120}]}]
+
+
+
+
+#################################################################
+# Results of starting a log, and adding some files to the dataDir
+#################################################################
+
+# Note: "_id" automatically generated
+
+
+### obsLog.logs ###
+
+{"_id": ObjectId("4fecfe9bbd92da73d9000000"),
+  "dataDir": "/home/icunnyngham/obsMonitor/mon/LRIS/",
+  'instrument': 'LRIS',
+  "observers": "Some Observer Names",
+  "project": "A Project Name",
+  "saoa": "Some Support Astronomer Names",
+  "utcDate": datetime.datetime(2012, 6, 29, 1, 2, 19, 109000)}
+
+
+### obsLog.activeLogs ###
+{"_id": ObjectId("4fecfe9bbd92da73d9000001"),
+  "logID": ObjectId("4fecfe9bbd92da73d9000000")}
+
+
+### obsLog.entries ###
+
+### Demonstrating the 4 different types of log entries currently 
+### being used.  "file" types log new files being tracked,
+### "exclude" show files that have been excluded from tracking
+### "comment" is for general night comments by the users
+### "alerts" are for general status updates to the log
+
+[{'_id': ObjectId('5004bd3cbd92da4cd4000002'),
+  'logID': ObjectId('5004bd3cbd92da4cd4000000'),
+  'title': 'New Log started',
+  'type': 'alert',
+  'utcDate': datetime.datetime(2012, 7, 17, 1, 17, 48, 9000)},
+ {'_id': ObjectId('5004bd3dbd92da4d5d000001'),
+  'fitsID': ObjectId('5004bd3dbd92da4d5d000000'),
+  'logID': ObjectId('5004bd3cbd92da4cd4000000'),
+  'name': 'r120615_0109.fits',
+  'type': 'file',
+  'utcDate': datetime.datetime(2012, 7, 17, 1, 17, 49, 244000)},
+ {'_id': ObjectId('50076067bd92da430b13be21'),
+  'comment': 'Just Testing\n\nFurther testing',
+  'logID': ObjectId('500666f6bd92da18dd05d209'),
+  'timestamp': '(UTC) 01:18:31',
+  'type': 'comment',
+  'utcDate': datetime.datetime(2012, 7, 19, 1, 18, 31, 216000)},
+ {'_id': ObjectId('500dbab2bd92da33dbf9619b'),
+  'filename': 'blah.fits',
+  'logID': ObjectId('500db9e3bd92da324da0ac3e'),
+  'reason': 'Repeated IOError',
+  'type': 'exclude',
+  'utcDate': datetime.datetime(2012, 7, 23, 20, 57, 22, 318000)}]
+
+
+### obsLog.fits ###
+
+# Note: Headers extremely truncated here (every fits header key: value is stored in the DB!)
+
+[{"_id": ObjectId("4fecfed4bd92da73f4000000"),
+  "filename": "b120615_0100.fits",
+  "headers": [{"": "",
+    "ABFREQ": 20,
+    ...,
+    "WINDOW": "0,0,0,2048,4096"},
+   {"": "",
+    "AMPLOC": "0",
+    ...,
+    "XTENSION": "IMAGE"},
+   {"": "",
+    "AMPLOC": "1",
+    ...,
+    "XTENSION": "IMAGE"},
+   {"": "",
+    "AMPLOC": "2",
+    ...,
+    "XTENSION": "IMAGE"},
+   {"": "",
+    "AMPLOC": "3",
+    ...,
+    "XTENSION": "IMAGE"}],
+  "last_modified": datetime.datetime(2012, 6, 28, 15, 3, 16, 233000),
+  "logID": ObjectId("4fecfe9bbd92da73d9000000")},
+ {"_id": ObjectId("4fecfedbbd92da73f4000002"),
+  "_ns": "fits",
+  "filename": "b120615_0102.fits",
+  "headers": [{"": "",
+    "ABFREQ": 20,
+    ...,
+    "WINDOW": "0,0,0,2048,4096"},
+   {"": "",
+    "AMPLOC": "0",
+    ...,
+    "XTENSION": "IMAGE"},
+   {"": "",
+    "AMPLOC": "1",
+    ...,
+    "XTENSION": "IMAGE"},
+   {"": "",
+    "AMPLOC": "2",
+    ...,
+    "XTENSION": "IMAGE"},
+   {"": "",
+    "AMPLOC": "3",
+    ...,
+    "XTENSION": "IMAGE"}],
+  "last_modified": datetime.datetime(2012, 6, 28, 15, 3, 23, 104000),
+  "logID": ObjectId("4fecfe9bbd92da73d9000000")},
+]

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>KeOLA - Keck Observation Log Archive</title>
+  <link rel="shortcut icon" href="/static/images/keck.ico" />
+
+  <link type="text/css" href="/static/css/google_fonts.css" rel="stylesheet" />
+
+  <link type="text/css" href="/static/css/absolution.blue.css" rel="stylesheet" />
+  <link type="text/css" href="/static/css/slick.grid.css" rel="stylesheet" />
+  <link type="text/css" href="/static/css/jquery.elegantExpandingTextareas.css" rel="stylesheet" />
+
+  <link type="text/css" href="/static/obsLog.css" rel="stylesheet" />
+
+  <script src="/static/obsLog.min.js"></script> 
+</head>
+
+<body>
+  <div id="KeOLA"><center>
+    <h1><a href="/#">KeOLA - Keck Observing Log Archive</a></h1>
+    <div id="goAdmin">[ <a href="/#admin">Admin Controls</a> ]</div>
+  </center></div>
+
+  <!-- Templates !-->
+
+  <!-- Start view Templates !-->
+
+  <script type="text/template" id="activeLogList-template">
+        <h2>Currently active logs:</h2>
+  </script>
+
+  <script type="text/template" id="activeLog-template">
+          Project: <%= project %> (<%= instrument %>), started on <%= datestamp %>
+  </script>
+
+  
+  <!-- Log view Templates !-->
+
+<ul id="groupMenu" class="contextMenu">
+  <li data="group">Group selected rows</li>
+  <li data="ungroup">Remove groups in selection</li>
+</ul>
+
+  <script type="text/template" id="log_template">
+    <div id="accordian-header">
+     <h3><a href="#">Log Controls</a></h3>
+
+       <div id="control-tabs">
+         <ul>
+            <li><a href="#logInfo">Log Info</a></li>
+            <li><a href="#settings">Settings</a></li>
+            <li><a href="#print">Print</a></li>
+         </ul>
+         <div id="logInfo">
+         <table border="0">
+         <tr><td rowspan=2>
+          <table class="rBorder shadow" cellpadding="3">
+            <tr>
+              <th>Project Name:</th><td><%= log.get("project") %></td>
+            </tr><tr>
+              <th>Observers:</th><td><%= log.get("observers") %></td>
+            </tr><tr>
+              <th>Instrument:</th><td><%= log.get("instrument") %></td>
+            </tr><tr>
+              <th>SA:</th><td><%= log.get("sa") %></td>
+            </tr><tr>
+              <th>OA:</th><td><%= log.get("oa") %></td>
+            </tr><tr>
+              <th>Data Directories:</th>
+              <td>
+                <a href="javascript:void(0)" id="showhideLink">[ Show / Hide full list ]</a>
+                <div id="showhideDirs" style="display:none">
+                    <%= log.get("dataDirs").join("<br />") %>
+                </div>
+              </td> 
+            </tr>
+          </table>
+         </td><td valign="top">
+  <% if (log.has("twilight")) { %>
+          <table style="margin-left:1em;" cellpadding="3" class="rBorder horizontal shadow">
+            <tr>
+              <th>Sunset:</th>
+              <th>Dusk 12&deg;:</th>
+              <th>Dusk 18&deg;:</th>
+              <th>Dawn 18&deg;:</th>
+              <th>Dawn 12&deg;:</th>
+              <th>Sunrise:</th> 
+              <th>Dark Percentage:</th> 
+            </tr><tr>
+              <td><%= log.get("twilight")["sunset"] %> UTC</td>
+              <td><%= log.get("twilight")["dusk_12deg"] %> UTC</td>
+              <td><%= log.get("twilight")["dusk_18deg"] %> UTC</td>
+              <td><%= log.get("twilight")["dawn_18deg"] %> UTC</td>
+              <td><%= log.get("twilight")["dawn_12deg"] %> UTC</td>
+              <td><%= log.get("twilight")["sunrise"] %> UTC</td>
+              <td><%= log.get("twilight")["dark"] %>%</td>
+            </tr>
+          </table>
+  <% } %>
+        </td>
+        </tr><tr valign="bottom"><td>
+         <table style="margin-left:1em;" cellpadding="3" class="ui-widget ui-widget-content shadow"> 
+            <tr>
+              <th colspan=2>Log entry controls</th>
+            </tr><tr>
+              <td><button id="requestWeather">Request weather entry</button></td>
+              <td><button id="gotoComment">Insert night comment</button></td>
+            </tr>
+         </table>
+        </td></tr></table>
+         </div>
+         <div id="settings">
+            <table style="display:inline-block" class="ui-widget ui-widget-content shadow" cellpadding="5px">
+              <tr>
+                <th colspan=2>General options</th>
+              </tr>
+              <tr>
+                <td><label>Scroll on update:</label></td>
+                <td id="entryScroll">
+                    <input type="radio" id="eScrollOn" name="radio" value="on" checked="checked"><label for="eScrollOn">On</label> 
+                    <input type="radio" id="eScrollOff" name="radio" value="off"><label for="eScrollOff">Off</label> 
+                </td>
+              </tr>
+            </table>
+            <table style="display:inline-block" class="ui-widget ui-widget-content shadow" cellpadding="5px">
+              <tr>
+                <th colspan=2>Data Grid options</th>
+              </tr>
+              <tr>
+                <td><label>Column view:</label></td>
+                <td>
+                    <select id="viewSelect"></select>
+                    <button id="viewConfig">Configure View</button>
+                </td>
+              </tr>
+            </table>
+         </div>
+         <div id="print">
+            <button id="printGrid">Print Data Grid</button> 
+         </div>
+     </div>
+   </div>
+
+    <div id="tabs">
+        <ul id="tab-header">
+            <li><a href="#entryView">Log Entry Monitor</a></li>
+            <li><a href="#dataView">Data Log</a></li>
+            <li><a href="#weather">Current Weather</a></li>
+        </ul>
+        <div id="entryView">
+            <ul id="entry-list"></ul>
+            <div id="entryComment">
+                <button>Add comment</button>
+                <div class="expandingArea"><pre><span></span><br></pre><textarea></textarea></div>
+            </div>
+        </div>
+        <div id="dataView">
+            <h1 id="noGrid">No data yet...</h1>
+            <div id="grid"></div>
+        </div>
+        <div id="weather">
+        </div>
+    </div>
+  </script>
+
+  
+  <!-- Log view sub-templates !-->
+
+  <script type="text/template" id="view_select_template">
+      <% views.each(function(view) { %>
+        <option value="<%= view.get('name') %>"><%= view.get('name') %></option>
+      <% }); %>
+  </script>
+
+  <script type="text/template" id="weatherFrame-template">
+    <iframe name="weatherFrame" id="weatherFrame" src="http://www.keck.hawaii.edu/observing/weather/weather2/index.php">
+    </iframe>
+  </script>
+
+  <script type="text/template" id="entry-template">
+      <% if (type == "alert") { %>
+        <label>
+            <%= timestamp %>: <%= title %>
+       </lebel>
+      <% } else if (type == "weather") { %>
+        <lable><%= timestamp %>: <b>Weather Update</b>
+            <table class="rBorder horizontal" cellpadding="5px">
+                <tr>
+                    <th>Temperature</th>
+                    <th>Dome temp.</th>
+                    <th>Dew point</th>
+                    <th>Rel. humidity</th>
+                    <th>Pressure</th>
+                </tr><tr>
+                    <td><%= weather['k0:met:tempRaw'] %> C</td>
+                    <td><%= weather['k0:met:domeTempRaw'] %> C</td>
+                    <td><%= weather['k0:met:dewpointRaw'] %> C</td>
+                    <td><%= weather['k0:met:humidityRaw'] %> %</td>
+                    <td><%= weather['k0:met:pressureRaw'] %> mBar</td>
+                </tr>
+            </table>
+      <% } else if (type == "comment") { %>
+        <label>
+            <%= timestamp %>: 
+            <b>Observers Comment:</b>
+            <div class="expandingArea"><pre><span></span><br></pre><textarea></textarea></div>
+        </label>
+      <% } else if (type == "exclude") { %>
+        <label>
+            <%= timestamp %>:
+            Excluded <%= filename %>
+            from further tracking.  Reason: <%= reason %>
+        </label>
+      <% } %>
+  </script>
+
+
+  <!-- Admin Templates !-->
+
+  <script type="text/template" id="loginView_template">
+      <div class="error"></div>
+      <label for="login-username">Username:</label><input id="login-username" type="text">
+      <label for="login-password">Password:</label><input id="login-password" type="password">
+  </script>
+
+  <script type="text/template" id="admin_template">
+    <div style="text-align:right;">
+      Filter <input id="textFilter" type="text" title="Search within project name, observers, and instrument">
+      from <input id="utcFrom" type="text">
+      to <input id="utcTo" type="text">
+    </div>
+    <div id="logGrid"></div>
+  </script>
+
+  <script type="text/template" id="deleteLog_template">
+    Do you really want to delete this log?
+    <br /><B>Date:</B> <%= date %>
+    <br /><B>Project:</B> <%= project %> 
+    <br /><B>Observers:</B> <%= observers %>
+
+  </script>
+
+  <script type="text/template" id="logCreate_template">
+      <label for="instrumentSelect">Instrument:</label>
+      <select id="instrSelect">
+        <option value="" selected disabled><i>Loading...</i></option>
+      </select>
+      <p><label for="log-pname">Project Name:</label><input id="log-pname" type="text"></p>
+      <label for="log-obsv">Observers:</label><input id="log-obsv" type="text">
+      <label for="log-sa">SA:</label><input id="log-sa" type="text">
+      <label for="log-oa">OA:</label><input id="log-oa" type="text">
+      <label for="log-dir">Data Directory:</label><input id="log-dir" type="text">
+  </script>
+
+  <script type="text/template" id="logEdit_template">
+      <label for="instrumentSelect">Instrument:&nbsp;&nbsp;&nbsp;&nbsp;<%= instrument %></label><br />
+      <p><label for="log-pname">Project Name:</label><input id="log-pname" type="text" value="<%= project %>"></p>
+      <label for="log-obsv">Observers:</label><input id="log-obsv" type="text" value="<%= observers %>">
+      <label for="log-sa">SA:</label><input id="log-sa" type="text" value="<%= sa %>">
+      <label for="log-oa">OA:</label><input id="log-oa" type="text" value="<%= oa %>">
+      <label for="log-dir">Data Directories:</label>
+      <span>
+      <% _.each(dataDirs, function(dir) { %>
+        <%= dir %>
+        <br />
+      <% }); %>
+      </span>
+  </script>
+
+  <script type="text/template" id="instrSelect_template">
+      <option value="" disabled><B>Select Instrument:</B></option>
+      <% instruments.each(function(instr) { %>
+        <option value="<%= instr.get('name') %>"><%= instr.get('name') %></option>
+      <% }); %>
+  </script>
+
+  <!-- End Templates !-->
+     
+  </body>
+</html>
