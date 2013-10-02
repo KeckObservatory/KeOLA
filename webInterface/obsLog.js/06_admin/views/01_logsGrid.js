@@ -12,7 +12,7 @@
 
             // Set default options for our grid view.
             var gridOptions = {
-                formatterFactory: Slickback.BackboneModelFormatterFactory 
+                formatterFactory: Slickback.BackboneModelFormatterFactory
             };
 
             // Define the columns we want to view on the grid
@@ -165,6 +165,7 @@
             // When the collection is updated, this is how we tell
             // Slick.Grid to update
             this.grid.invalidateAllRows();
+	    this.grid.updateRowCount();
             this.grid.render();
         },
         
