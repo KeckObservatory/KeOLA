@@ -1,7 +1,7 @@
 import pymongo
 from bson.objectid import ObjectId
 import json_util
-from flask import Flask, render_template, url_for, json, request, session
+from flask import Flask, render_template, url_for, json, request, session, send_from_directory
 from functools import wraps
 from datetime import datetime
 from hashlib import md5
@@ -407,6 +407,47 @@ def print_log(logID, viewID):
     # Pass all this info to the print template and render it
     return render_template("print.html", fits=filteredFits, log=log, fvCols=fvCols, entries=entries)
 
+
+# Serve up a printable view of a given log, with a given view applied to the data
+@app.route('/save/<logID>/<viewID>')
+def save_log(logID, viewID):
+    # Pull the log requested directly via a call to the relevant route function
+    log = json_load( get_log( logID ) )
+
+    # Get the columns of the fitsView requested
+    fvCols = json_load( get_view(viewID) )["columns"]
+
+    # Get all log entries 
+    entries = json_load( list_entries(logID) )
+
+    # Get all the relevant fits entries
+    fits = json_load( list_fits(logID, viewID) )
+
+    filteredFits = []
+    expanded = {}
+    for f in fits:
+        if "childrenExpand" in f:
+            expanded[ f["group"] ] = f["childrenExpand"]
+            filteredFits.append( f )
+        elif f["group"] != False :
+            if expanded[ f["group"] ]:
+                filteredFits.append( f )
+        else:
+            filteredFits.append( f )
+    
+     
+    # Pass all this info to the save template and render it
+    
+    output_from_template = render_template("save.html", fits=filteredFits, log=log, fvCols=fvCols, entries=entries)
+    project = log["project"]
+    logutdate = log["utcDate"].strftime("%y-%m-%d")
+    instrument = log["instrument"]
+    #print "saving to"+output_directory+" for project "+project
+    output_file = logutdate+"_"+instrument+"_"+project+".html"
+    with open("/home/keola/obsMonitor/SAVED_LOGS/"+output_file, "wb") as f:
+        f.write(output_from_template)
+    return send_from_directory("/home/keola/obsMonitor/SAVED_LOGS/",output_file, as_attachment=True)
+    #return render_template("save.html", fits=filteredFits, log=log, fvCols=fvCols, entries=entries)
 
 # Allow comment's to be PUT into existing fits entries
 @app.route('/fits/<fitsID>', methods=['PUT'])

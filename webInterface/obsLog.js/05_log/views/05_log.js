@@ -83,6 +83,8 @@
 
             this.$("#printGrid").button({icons: {primary: "ui-icon-print"} })
 
+	    this.$("#saveGrid").button({icons: {primary: "ui-icon-disk"} })
+
             this.$("#requestWeather").button({icons:{primary: "ui-icon-note"} })
 
             this.$("#gotoComment").button({icons:{primary: "ui-icon-comment"} })
@@ -158,6 +160,7 @@
             this.$("#entryComment button").button("destroy");
             this.$("#viewConfig").button("destroy");
             this.$("#printGrid").button("destroy");
+            this.$("#saveGrid").button("destroy");
             this.$("#requestWeather").button("destroy");
             this.$("#gotoComment").button("destroy");
         }

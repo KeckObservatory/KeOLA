@@ -51,7 +51,7 @@
          <ul>
             <li><a href="#logInfo">Log Info</a></li>
             <li><a href="#settings">Settings</a></li>
-            <li><a href="#print">Print</a></li>
+            <li><a href="#print">Print/Save</a></li>
          </ul>
          <div id="logInfo">
          <table border="0">
@@ -72,7 +72,7 @@
               <td>
                 <a href="javascript:void(0)" id="showhideLink">[ Show / Hide full list ]</a>
                 <div id="showhideDirs" style="display:none">
-                    <%= log.get("dataDirs").join("<br />") %>
+                    <%= log.get("activeDirs").join("<br />") %>
                 </div>
               </td> 
             </tr>
@@ -139,6 +139,7 @@
          </div>
          <div id="print">
             <button id="printGrid">Print Data Grid</button> 
+            <button id="saveGrid">Save Data Grid</button>
          </div>
      </div>
    </div>

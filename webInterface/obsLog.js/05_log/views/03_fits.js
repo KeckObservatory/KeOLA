@@ -89,6 +89,7 @@
 
             // Bind this.printGrid() to run when the print button is pressed
             $("#printGrid").on("click", this.printGrid );
+            $("#saveGrid").on("click", this.saveGrid );
 
 
             // Append a custom formatter to the first column of the grid
@@ -339,6 +340,11 @@
             // logID and fitsView ID for printing
             window.open(this.collection.printURL());
         },
+        saveGrid: function() {
+            // Open a new window, sending it to the appropriate
+            // logID and fitsView ID for printing
+            window.open(this.collection.saveURL());
+        },
 
         monitor: function() {
             // Switch monitoring to fetching fits data every 2 min
@@ -352,6 +358,7 @@
             this.viewSelector.$el.off();
             this.viewSelector.close();
             $("#printGrid").off();
+            $("#saveGrid").off();
             $(window).off("resize");
             $("#groupMenu").off();
             if (this.grid) {

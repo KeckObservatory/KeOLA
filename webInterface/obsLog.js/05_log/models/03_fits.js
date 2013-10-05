@@ -25,7 +25,7 @@
         // allows the server to know which data to include in each fits entry.
         url: function() { return "/fits/" + this.logID + "/" + this.viewID ; },
         printURL: function() { return "/print/" + this.logID + "/" + this.viewID ; },
-
+	saveURL: function() {return "/save/" + this.logID + "/" + this.viewID ; },
         initialize: function(logID, viewID) {
             this.logID = logID ;
 
