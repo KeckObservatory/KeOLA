@@ -350,6 +350,9 @@ def list_fits(logID, viewID):
                         except KeyError:
                             row[ tag ] = "!KeyError!"
 
+              # allow columns to accept a format
+            if "decimals" in c: 
+                row[ tag ] = round(row[ tag ],c["decimals"])
         # Include the "_id" to allow for fits comment posting
         row["_id"] = f["_id"]
 
