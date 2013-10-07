@@ -27,7 +27,7 @@ emailErrors = False
 emailTo = "lrizzi@keck.hawaii.edu"
 
 # Address that the message should be from
-emailFrom = "obsLog@dr5"
+emailFrom = "keola@observinglogs"
 
 # SMTP server
 smtpServer = "localhost"
@@ -55,14 +55,21 @@ if cleanLogs:
     # Remove all active logs by deleting the whole collection
     db.drop_collection("activeLogs")
 
-
 # Get today's date and store it
 d = date.today()
+print "New logs for "+str(d)+"."
 
 # Pull Schedules from the web for today, and generate logs for them
 for log in getSchedules.genLogs( d, db, errors ):
     # Save each new log to the database
     db.logs.save( log )
+    print ""
+    print "Instrument: "+log["instrument"]
+    print "Project:    "+log["project"]
+    print "Observers:  "+log["observers"]
+    print "SA:         "+log["sa"]
+
+
 
     # Mark each new log as active
     db.activeLogs.save({"logID": log["_id"]})
