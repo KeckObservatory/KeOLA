@@ -107,7 +107,7 @@ h2 {
     }
 
 #grid{display:none;margin-bottom:1em;}
-#entryView,#grid, #weather {position:fixed; top:0;bottom:0;left:0;right:0;}
+#entryView,#grid, #weather {position:fixed; top:0;bottom:0;left:0;right:0;font-size: 12px;}
 #entryView, #weather { 
     border-top: 1px solid #aaa;
     padding: 0px;
@@ -237,6 +237,7 @@ ul li.last { border: none; }
 #logGrid{ 
     height: 500px ;
     color: #000;
+    font-size: 12px;
 }
 .center{
     text-align: center;
