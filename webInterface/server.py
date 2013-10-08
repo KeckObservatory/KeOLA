@@ -352,9 +352,9 @@ def list_fits(logID, viewID):
 
               # allow columns to accept a format
             if "decimals" in c: 
-                try:
+                if isinstance(row[ tag ],float):
                     row[ tag ] = round(row[ tag ],c["decimals"])
-                except KeyError:
+                else:
                     row[ tag ] = "!KeyError!"
 
         # Include the "_id" to allow for fits comment posting
