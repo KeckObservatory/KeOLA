@@ -76,6 +76,25 @@ ul li.last { border: none; }
 {% endfor %}
   </table>
 <h2>Log entries:</h2>
+<table border="1px" cellpadding="5px">
+<tr>
+<th>Sunset</th>
+<th>Dusk 12 deg</th>
+<th>Dusk 18 deg</th>
+<th>Dawn 18 deg</th>
+<th>Dawn 12 deg</th>
+<th>Sunrise</th>
+<th>Dark Frac.</th>
+</tr>
+<td> {{ log["twilight"]["sunset"]}} UTC</td>
+<td> {{ log["twilight"]["dusk_12deg"]}} UTC</td>
+<td> {{ log["twilight"]["dusk_18deg"]}} UTC</td>
+<td> {{ log["twilight"]["dawn_18deg"]}} UTC</td>
+<td> {{ log["twilight"]["dawn_12deg"]}} UTC</td>
+<td> {{ log["twilight"]["sunrise"]}} UTC</td>
+<td> {{ log["twilight"]["dark"]}} %</td>
+</tr>
+</table>
 <UL>
 {% for e in entries %}
     {% if e["type"] == "alert" %}
