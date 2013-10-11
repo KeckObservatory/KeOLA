@@ -1,5 +1,8 @@
 import pymongo
 import urllib2
+# For sending mail
+import smtplib
+from email.mime.text import MIMEText
 
 # Default connection options work for now
 connection = pymongo.Connection()
@@ -7,6 +10,17 @@ connection = pymongo.Connection()
 # Connection to obsLog database
 db = connection.obsLog
 
+# Should we email the results ?
+emailResults = True
+
+# E-mail address to send messages to
+emailTo = "lrizzi@keck.hawaii.edu"
+
+# Address that the message should be from
+emailFrom = "keola@observinglogs.localdomain"
+
+# SMTP server
+smtpServer = "localhost"
 
 ### JSON parsing handlers ###
 
@@ -27,15 +41,32 @@ outLogs = []
 # Query for all current activeLogs
 aLogs = db.activeLogs.find()
 
+email_body = ""
+
+
 # Iterate through the cursor returned
 for al in aLogs:
     # Get the log entry for this active log
     print "Retrieving information for log ID: "+str(al["logID"])
+    email_body = email_body+"\n"+"Retrieving information for log ID: "+str(al["logID"])
     mylog = db.logs.find_one({"_id": al["logID"]}, {"project":1, "utcDate":1, "instrument":1})
     print "Instrument is "+mylog["instrument"]
+    email_body = email_body+"\n"+"Instrument is "+mylog["instrument"]
     print "Looking for "+mylog["instrument"]+" fitsViews..."
+    email_body = email_body+"\n"+"Looking for "+mylog["instrument"]+" fitsViews..."
     fitsview = db.fitsViews.find_one({"instrument": mylog["instrument"]},)
     print "found: "+str(fitsview["_id"])
+    email_body = email_body+"\n"+"found: "+str(fitsview["_id"])
     f = urllib2.urlopen("http://observinglogs/save/"+str(al["logID"])+"/"+str(fitsview["_id"]))
+
+if emailResults:
+    msg = MIMEText ( email_body )
+    msg['Subject'] = " Observation Log: Logs saved."
+    msg['From'] = emailFrom
+    msg['to'] = emailTo
+    s = smtplib.SMTP( smtpServer )
+    s.sendmail(emailFrom, [emailTo], msg.as_string())
+    s.quit()
+
 
 

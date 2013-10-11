@@ -22,8 +22,10 @@ cleanLogs = True
 
 # Should we email the errors?
 emailErrors = False
+# Should we email the results ?
+emailResults = True
 
-# E-mail address to send errors to
+# E-mail address to send messages to
 emailTo = "lrizzi@keck.hawaii.edu"
 
 # Address that the message should be from
@@ -59,6 +61,8 @@ if cleanLogs:
 d = date.today()
 print "New logs for "+str(d)+"."
 
+email_body = "New logs for "+str(d)+"."
+
 # Pull Schedules from the web for today, and generate logs for them
 for log in getSchedules.genLogs( d, db, errors ):
     # Save each new log to the database
@@ -68,6 +72,10 @@ for log in getSchedules.genLogs( d, db, errors ):
     print "Project:    "+log["project"]
     print "Observers:  "+log["observers"]
     print "SA:         "+log["sa"]
+    email_body = email_body+"\n"+"Instrument: "+log["instrument"]
+    email_body = email_body+"\n"+"Project:    "+log["project"]
+    email_body = email_body+"\n"+"Observers:  "+log["observers"]
+    email_body = email_body+"\n"+"SA:         "+log["sa"]
 
 
 
@@ -93,6 +101,15 @@ if len(errors) != 0:
         s = smtplib.SMTP( smtpServer )
         s.sendmail(emailFrom, [emailTo], msg.as_string())
         s.quit()
+if emailResults:
+    mgs = MIMEText ( emailbody )
+    mgs['Subject'] = " Observation Log: New logs for today."
+    mgs['From'] = emailFrom
+    mgs['to'] = emailTo
+    s = smtplib.SMTP( smtpServer )
+    s.sendmail(emailFrom, [emailTo], msg.as_string())
+    s.quit()
+
 
     # Write an output log if outputErrorLog is set to True
     if outputErrorLog:
