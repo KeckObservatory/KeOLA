@@ -37,7 +37,7 @@ smtpServer = "localhost"
 
 # Alternatively, should we output errors to a log file?
 outputErrorLog = True
-
+    
 # Log directory
 logDir = "."
 
@@ -101,18 +101,18 @@ if len(errors) != 0:
         s = smtplib.SMTP( smtpServer )
         s.sendmail(emailFrom, [emailTo], msg.as_string())
         s.quit()
-if emailResults:
-    mgs = MIMEText ( emailbody )
-    mgs['Subject'] = " Observation Log: New logs for today."
-    mgs['From'] = emailFrom
-    mgs['to'] = emailTo
-    s = smtplib.SMTP( smtpServer )
-    s.sendmail(emailFrom, [emailTo], msg.as_string())
-    s.quit()
-
 
     # Write an output log if outputErrorLog is set to True
     if outputErrorLog:
         with open( logDir +"/" + dString + "_error.log" , "w") as f:
             f.write( errorOut )
+
+if emailResults:
+    msg = MIMEText ( email_body )
+    msg['Subject'] = " Observation Log: New logs for today."
+    msg['From'] = emailFrom
+    msg['to'] = emailTo
+    s = smtplib.SMTP( smtpServer )
+    s.sendmail(emailFrom, [emailTo], msg.as_string())
+    s.quit()
 
