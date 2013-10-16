@@ -3,6 +3,7 @@ import urllib2
 # For sending mail
 import smtplib
 from email.mime.text import MIMEText
+from datetime import datetime
 
 # Default connection options work for now
 connection = pymongo.Connection()
@@ -47,24 +48,33 @@ email_body = ""
 # Iterate through the cursor returned
 for al in aLogs:
     # Get the log entry for this active log
-    print "Retrieving information for log ID: "+str(al["logID"])
+    # print "Retrieving information for log ID: "+str(al["logID"])
     email_body = email_body+"\n"+"Retrieving information for log ID: "+str(al["logID"])
     mylog = db.logs.find_one({"_id": al["logID"]}, {"project":1, "utcDate":1, "instrument":1})
-    print "Instrument is "+mylog["instrument"]
+    filename = mylog["utcDate"].strftime("%y-%m-%d")+"_"+mylog["instrument"]+"_"+mylog["project"]
+    # print "Instrument is "+mylog["instrument"]
     email_body = email_body+"\n"+"Instrument is "+mylog["instrument"]
-    print "Looking for "+mylog["instrument"]+" fitsViews..."
+    # print "Looking for "+mylog["instrument"]+" fitsViews..."
     email_body = email_body+"\n"+"Looking for "+mylog["instrument"]+" fitsViews..."
     fitsview = db.fitsViews.find_one({"instrument": mylog["instrument"]},)
-    print "found: "+str(fitsview["_id"])
+    # print "found: "+str(fitsview["_id"])
     email_body = email_body+"\n"+"found: "+str(fitsview["_id"])
+    email_body = email_body+"\n"+"http://observinglogs/SAVED_LOGS/"+filename+".html"
+    email_body = email_body+"\n"
     f = urllib2.urlopen("http://observinglogs/save/"+str(al["logID"])+"/"+str(fitsview["_id"]))
 
 if emailResults:
+    email_body = email_body+"\n"
+    email_body = email_body+"\n"
+    email_body = email_body+"\n"+"You can see the list of saved logs at:"
+    email_body = email_body+"\n"+"http://observinglogs/loglist"
+
     msg = MIMEText ( email_body )
     msg['Subject'] = " Observation Log: Logs saved."
     msg['From'] = emailFrom
     msg['to'] = emailTo
     s = smtplib.SMTP( smtpServer )
+
     s.sendmail(emailFrom, [emailTo], msg.as_string())
     s.quit()
 

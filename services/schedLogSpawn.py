@@ -59,7 +59,7 @@ if cleanLogs:
 
 # Get today's date and store it
 d = date.today()
-print "New logs for "+str(d)+"."
+# print "New logs for "+str(d)+"."
 
 email_body = "New logs for "+str(d)+"."
 
@@ -67,11 +67,11 @@ email_body = "New logs for "+str(d)+"."
 for log in getSchedules.genLogs( d, db, errors ):
     # Save each new log to the database
     db.logs.save( log )
-    print ""
-    print "Instrument: "+log["instrument"]
-    print "Project:    "+log["project"]
-    print "Observers:  "+log["observers"]
-    print "SA:         "+log["sa"]
+    # print ""
+    # print "Instrument: "+log["instrument"]
+    # print "Project:    "+log["project"]
+    # print "Observers:  "+log["observers"]
+    # print "SA:         "+log["sa"]
     email_body = email_body+"\n"+"Instrument: "+log["instrument"]
     email_body = email_body+"\n"+"Project:    "+log["project"]
     email_body = email_body+"\n"+"Observers:  "+log["observers"]

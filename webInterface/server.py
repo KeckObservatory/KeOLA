@@ -5,6 +5,8 @@ from flask import Flask, render_template, url_for, json, request, session, send_
 from functools import wraps
 from datetime import datetime
 from hashlib import md5
+import os.path
+from flask.ext.autoindex import AutoIndex
 
 
 # Redirect output to std_err to allow for error logging
@@ -41,6 +43,21 @@ def json_load(data):
 
 def json_dump(data):
     return json.dumps(data, default=json_util.default)
+
+# defines the function needed to generate the list of logs saved in the SAVED_LOGS directory
+def make_tree(path):
+    tree = dict(name=os.path.basename(path), children=[])
+    try: lst = sorted(os.listdir(path))
+    except OSError:
+        pass #ignore errors
+    else:
+        for name in lst:
+            fn = os.path.join(path, name)
+            if os.path.isdir(fn):
+                tree['children'].append(make_tree(fn))
+            else:
+                tree['children'].append(dict(name=name))
+    return tree
 
 
 ### Function decorators ###
@@ -383,6 +400,16 @@ def list_fits(logID, viewID):
     # Encode the output list into JSON and return it
     return json_dump( list( outList) )
 
+# this route serves an html version of the logs, as saved in the SAVED_LOGS directory
+@app.route('/SAVED_LOGS/<filename>')
+def send_logs(filename):
+    return send_from_directory('/home/keola/obsMonitor/SAVED_LOGS',filename)
+
+
+@app.route('/loglist')
+def dirtree():
+    path = "/home/keola/obsMonitor/SAVED_LOGS"
+    return render_template('loglist.html', tree=make_tree(path))
 
 # Serve up a printable view of a given log, with a given view applied to the data
 @app.route('/print/<logID>/<viewID>')
