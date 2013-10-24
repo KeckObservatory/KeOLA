@@ -80,6 +80,11 @@ class ObsLog:
         else:
             self.instrAttr = [0, "INSTRUME"]
 
+        if "alternateName" in self.instr:
+            self.alternateName = self.instr["alternateName"]
+        else:
+            self.alternateName = "None"
+
         # Catch if twilight information is missing, and if so, add it
         if "twilight" not in self.log:
             print "Appending twilight information to log ", self.id
@@ -301,8 +306,10 @@ class ObsLog:
                         self.alertEntry( "Warning: " + str( self.instrAttr ) + " attribute not found for " + f)
                     else: 
                         if self.instrument not in str(fitsInstr):
-                            self.alertEntry( "Warning: " + self.instrument+" not in instrument keyword of " + f)
-
+                            if self.alternateName != "None" and self.alternateName not in str(fitsInstr):
+                                self.alertEntry( "Warning: Neither " + self.instrument+" nor " + self.alternateName + " in instrument keyword of " + f)
+                            elif self.alternateName == "None":
+                                self.alertEntry( "Warning: " + self.instrument+" not in instrument keyword of " + f)
                     # Create a record to be stored in the database 
                     fRecord = {"filename": f,
                         "directory": dir,
