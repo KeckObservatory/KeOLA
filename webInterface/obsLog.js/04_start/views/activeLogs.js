@@ -35,7 +35,7 @@
             // Bind jQueryUI button functionality to this element
             // and give the button a nice icon
             this.$el.button({
-                icons:{primary: "ui-icon-triangle-1-e"} 
+		  icons:{primary: "ui-icon-triangle-1-e"} 
             });
 
             // Return this view to its parent to be inserted there
