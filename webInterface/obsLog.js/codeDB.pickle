@@ -17,7 +17,7 @@ g3
 S'var ActiveLogView=Backbone.View.extend({tagName:"button",className:"activeLogButton",template:_.template($("#activeLog-template").html()),events:{click:"openLog"},initialize:function(){this.model.on("add",this.render,this)},render:function(){this.$el.html(this.template(this.model.toJSON()));this.$el.button({icons:{primary:"ui-icon-triangle-1-e"}});return this},openLog:function(){keOLARouter.navigate("logs/"+this.model.id,{trigger:!0})},onClose:function(){this.model.off("add");this.$el.button("destroy")}}),\nActiveLogListView=Backbone.View.extend({template:_.template($("#activeLogList-template").html()),initialize:function(){_.bindAll(this);this.viewCollection=[];this.collection.on("reset",this.update);q.start("actLog",{code:this.collection.fetch,context:this.collection});this.monitor()},render:function(){this.$el.hide();this.$el.html(this.template());return this},update:function(){this.collection.each(function(a){if(!_.any(this.viewCollection,function(b){return b.model.id==a.id})){var b=new ActiveLogView({model:a});\nthis.$el.append(b.render().el);this.viewCollection.push(b)}},this);this.viewCollection=_.reduce(this.viewCollection,function(a,b){if(_.any(this.collection.models,function(a){return b.model.id==a.id}))return a.concat([b]);b.close();return a},[],this);this.collection.length?this.$el.show():this.$el.hide()},monitor:function(){q.monitor("actLog",15E3)},onClose:function(){this.collection.off("update");q.remove("actLog");_.each(this.viewCollection,function(a){a.close()})}});'
 p9
 sg5
-S',S\xfc\xc0\x81\xb7\xc2]n\xb5,\xbcN\xce\xa3\x9a'
+S'V\x94Zu\x12X\xa1\xa5\xcfSm\xb4M\x08\x1d\t'
 p10
 ssS'./06_admin/00_login/models/auth.js'
 p11
@@ -241,10 +241,10 @@ ssS'./06_admin/views/02_editLog.js'
 p109
 (dp110
 g3
-S'var LogEditor=Backbone.View.extend({template:_.template($("#logEdit_template").html()),className:"logCreator",initialize:function(){_.bindAll(this);this.$el.html(this.template(this.model.toJSON()));$("body").append(this.el)},startDialog:function(){this.$el.dialog({autoOpen:!0,title:"Edit Log",width:700,position:["center","top"],buttons:{Cancel:this.close,Save:this.submit},modal:!0,open:function(){$("div.ui-dialog").css({top:"75px"});$(".ui-dialog-titlebar-close").hide()}})},submit:function(){q.start("editLog",\n{code:this.model.save,preArgs:{project:this.$("#log-pname").val(),observers:this.$("#log-obsv").val(),sa:this.$("#log-sa").val(),oa:this.$("#log-oa").val()},context:this.model,success:this.submitSuccess});q.request("editLog")},submitSuccess:function(){this.close();q.remove("editLog");this.options.parent.resetGrid()},onClose:function(){this.$el.dialog("destroy")}});'
+S'var LogEditor=Backbone.View.extend({template:_.template($("#logEdit_template").html()),className:"logCreator",initialize:function(){_.bindAll(this);this.$el.html(this.template(this.model.toJSON()));$("body").append(this.el)},startDialog:function(){this.$el.dialog({autoOpen:!0,title:"Edit Log",width:700,position:["center","top"],buttons:{Cancel:this.close,Save:this.submit},modal:!0,open:function(){$("div.ui-dialog").css({top:"75px"});$(".ui-dialog-titlebar-close").hide()}})},submit:function(){q.start("editLog",\n{code:this.model.save,preArgs:{project:this.$("#log-pname").val(),observers:this.$("#log-obsv").val(),pi:this.$("#log-pi").val(),sa:this.$("#log-sa").val(),oa:this.$("#log-oa").val()},context:this.model,success:this.submitSuccess});q.request("editLog")},submitSuccess:function(){this.close();q.remove("editLog");this.options.parent.resetGrid()},onClose:function(){this.$el.dialog("destroy")}});'
 p111
 sg5
-S'\xccGU\xc0M\x01]\xd2[\x03\xd3k\xbd\xf7\xd5\x94'
+S'\xacfg\xfc\t\xbbLl^\xeb\xf0\x92\xe9%\x00&'
 p112
 ssS'06_admin/views/02_editLog.js'
 p113
@@ -282,14 +282,14 @@ p127
 sg5
 S'/\xf4\xbc\x924)F9iOO\xcb.\x1f!\x12'
 p128
-ssS'./03_queue.js'
+ssS'./05_log/models/02_fitsView.js'
 p129
 (dp130
 g3
-S'var q={qStore:{},start:function(a,b){"args"in b||(b.args={});b.args.success=q.succ(a);b.args.error=q.err(a);b.paused=!1;this.qStore[a]=b},request:function(a){var b=this.qStore[a];b.paused||(b.preArgs?b.code.call(b.context,b.preArgs,b.args):b.code.call(b.context,b.args),this.pause(a))},pause:function(a){this.qStore[a].paused=!0},unpause:function(a){this.qStore[a].paused=!1},monitorRunning:!1,monitorInterval:12E4,monitor:function(a,b){this.monitorName=a;b&&(this.monitorInterval=b);this.monitorRunning?\nthis.request(a):(this.monitorCycle(),this.monitorRunning=!0)},monitorCycle:function(){""!=this.monitorName?(this.request(this.monitorName),_.delay(this.monitorCycle,this.monitorInterval)):this.monitorRunning=!1},succ:function(a){return _.bind(function(b,d){var c=this.qStore[a];"retries"in c&&delete c.retries;this.unpause(a);c.success&&c.success(b,d)},this)},err:function(a){return _.bind(function(b,d){var c=this.qStore[a];401==d.status?keOLARouter.navigate("admin/login",{trigger:!0}):(this.unpause(a),\n"retries"in c?0<c.retries?(c.retries-=1,this.request(a)):alert(a+" request failed after 3 retries!  Giving up..."):(c.retries=3,this.request(a)));c.error&&c.error(b,d)},this)},remove:function(a){this.monitorName==a&&(this.monitorName="");delete this.qStore[a]}};_.bindAll(q);'
+S'var FitsView=Backbone.Model.extend({idAttribute:"_id",initialize:function(){_.bindAll(this);this.cols=this.get("columns")},columns:function(){var a=this.cols.splice(0);a.push({id:"comment",name:"Comment",field:"comment",width:400,editable:!0,editor:Slickback.ExpandingCellEditor});return a}}),FitsViewList=Backbone.Collection.extend({model:FitsView,initialize:function(a){this.instrName=a;this.url="/fitsViews/"+this.instrName}});'
 p131
 sg5
-S'\xcd}\xa6vu\xdf\xe6o\xacf%\xeb\x03f\xe1\xa2'
+S'\x88\x99\xcc$\xa0\xd3\xfc\xd5\xf8\x94n\xeb\xa0F\xa9\xff'
 p132
 ssS'./00_includes/01_underscore.js'
 p133
@@ -358,10 +358,10 @@ ssS'./06_admin/views/01_logsGrid.js'
 p161
 (dp162
 g3
-S'var LogsGrid=Backbone.View.extend({initialize:function(){_.bindAll(this);this.subViews=[];this.grid=new Slick.Grid("#logGrid",this.collection,[{id:"date",name:"Date",field:"date",width:110},{id:"project",name:"Project",field:"project",width:180},{id:"observers",name:"Observers",field:"observers",width:180},{id:"instrument",name:"Instrument",field:"instrument",width:93},{id:"sa",name:"SA",field:"sa",width:110},{id:"oa",name:"OA",field:"oa",width:110},{id:"open",name:"Open",field:"open",width:55,cssClass:"cellLink",\nformatter:Slickback.NameFormatter},{id:"edit",name:"Edit",field:"edit",width:46,cssClass:"cellLink",formatter:Slickback.NameFormatter},{id:"delete",name:"Delete",field:"delete",width:70,cssClass:"cellLink",formatter:Slickback.NameFormatter},{id:"active",name:"Active?",field:"active",width:70,cssClass:"center",formatter:Slickback.CheckFormatter}],{formatterFactory:Slickback.BackboneModelFormatterFactory});this.grid.onClick.subscribe(this.handleClick);this.collection.on("reset",this.resetGrid)},handleClick:function(b){var c=\nthis.grid.getCellFromEvent(b),a=this.grid.getColumns()[c.cell].id;if("open"==a)a=this.collection.at(c.row),keOLARouter.navigate("logs/"+a.id,{trigger:!0});else if("edit"==a)a=this.collection.at(c.row),b=new LogEditor({model:a,parent:this}),b.startDialog(),this.subViews.push(b);else if("delete"==a)a=this.collection.at(c.row),b=new DeleteLogView({model:a,parent:this}),b.startDialog(),this.subViews.push(b);else if("active"==a){var a=this.collection.at(c.row),d=!a.get("active");(new SetActiveLog).save({logID:a.id,\nactive:d});a.set("active",d);this.grid.updateRow(c.row);c=document.getElementsByTagName("body")[0];window.getSelection().collapse(c,0);b.stopPropagation()}},resetGrid:function(){this.grid.invalidateAllRows();this.grid.updateRowCount();this.grid.render()},onClose:function(){this.collection.off("reset");this.grid.onClick.unsubscribe(this.handleClick);delete this.grid;$("#logGrid").off();_.each(this.subViews,function(b){b.close()})}});'
+S'var LogsGrid=Backbone.View.extend({initialize:function(){_.bindAll(this);this.subViews=[];this.grid=new Slick.Grid("#logGrid",this.collection,[{id:"date",name:"Date",field:"date",width:110},{id:"project",name:"Project",field:"project",width:100},{id:"pi",name:"PI",field:"pi",width:120},{id:"observers",name:"Observers",field:"observers",width:180},{id:"instrument",name:"Instrument",field:"instrument",width:93},{id:"sa",name:"SA",field:"sa",width:110},{id:"oa",name:"OA",field:"oa",width:110},{id:"open",\nname:"Open",field:"open",width:55,cssClass:"cellLink",formatter:Slickback.NameFormatter},{id:"edit",name:"Edit",field:"edit",width:46,cssClass:"cellLink",formatter:Slickback.NameFormatter},{id:"delete",name:"Delete",field:"delete",width:70,cssClass:"cellLink",formatter:Slickback.NameFormatter},{id:"active",name:"Active?",field:"active",width:70,cssClass:"center",formatter:Slickback.CheckFormatter}],{formatterFactory:Slickback.BackboneModelFormatterFactory});this.grid.onClick.subscribe(this.handleClick);\nthis.collection.on("reset",this.resetGrid)},handleClick:function(b){var c=this.grid.getCellFromEvent(b),a=this.grid.getColumns()[c.cell].id;if("open"==a)a=this.collection.at(c.row),keOLARouter.navigate("logs/"+a.id,{trigger:!0});else if("edit"==a)a=this.collection.at(c.row),b=new LogEditor({model:a,parent:this}),b.startDialog(),this.subViews.push(b);else if("delete"==a)a=this.collection.at(c.row),b=new DeleteLogView({model:a,parent:this}),b.startDialog(),this.subViews.push(b);else if("active"==a){var a=\nthis.collection.at(c.row),d=!a.get("active");(new SetActiveLog).save({logID:a.id,active:d});a.set("active",d);this.grid.updateRow(c.row);c=document.getElementsByTagName("body")[0];window.getSelection().collapse(c,0);b.stopPropagation()}},resetGrid:function(){this.grid.invalidateAllRows();this.grid.updateRowCount();this.grid.render()},onClose:function(){this.collection.off("reset");this.grid.onClick.unsubscribe(this.handleClick);delete this.grid;$("#logGrid").off();_.each(this.subViews,function(b){b.close()})}});'
 p163
 sg5
-S'\xf5\xc9q\r`&\xb8+.3\xdb\xa9\x88\xf3R\x95'
+S'\x8c\x96i(\xcc\xaf\xc4\x81\xee\xfc\xce\x07@l\xfa\xe8'
 p164
 ssS'./06_admin/models/setActiveLog.js'
 p165
@@ -381,14 +381,14 @@ p171
 sg23
 S'\xca\xee\x94\xdf\x94\xf2\xb7Wk\x82\x17\xdf\xd6Y#\x91'
 p172
-ssS'./05_log/models/02_fitsView.js'
+ssS'./03_queue.js'
 p173
 (dp174
 g3
-S'var FitsView=Backbone.Model.extend({idAttribute:"_id",initialize:function(){_.bindAll(this);this.cols=this.get("columns")},columns:function(){var a=this.cols.splice(0);a.push({id:"comment",name:"Comment",field:"comment",width:400,editable:!0,editor:Slickback.ExpandingCellEditor});return a}}),FitsViewList=Backbone.Collection.extend({model:FitsView,initialize:function(a){this.instrName=a;this.url="/fitsViews/"+this.instrName}});'
+S'var q={qStore:{},start:function(a,b){"args"in b||(b.args={});b.args.success=q.succ(a);b.args.error=q.err(a);b.paused=!1;this.qStore[a]=b},request:function(a){var b=this.qStore[a];b.paused||(b.preArgs?b.code.call(b.context,b.preArgs,b.args):b.code.call(b.context,b.args),this.pause(a))},pause:function(a){this.qStore[a].paused=!0},unpause:function(a){this.qStore[a].paused=!1},monitorRunning:!1,monitorInterval:12E4,monitor:function(a,b){this.monitorName=a;b&&(this.monitorInterval=b);this.monitorRunning?\nthis.request(a):(this.monitorCycle(),this.monitorRunning=!0)},monitorCycle:function(){""!=this.monitorName?(this.request(this.monitorName),_.delay(this.monitorCycle,this.monitorInterval)):this.monitorRunning=!1},succ:function(a){return _.bind(function(b,d){var c=this.qStore[a];"retries"in c&&delete c.retries;this.unpause(a);c.success&&c.success(b,d)},this)},err:function(a){return _.bind(function(b,d){var c=this.qStore[a];401==d.status?keOLARouter.navigate("admin/login",{trigger:!0}):(this.unpause(a),\n"retries"in c?0<c.retries?(c.retries-=1,this.request(a)):alert(a+" request failed after 3 retries!  Giving up..."):(c.retries=3,this.request(a)));c.error&&c.error(b,d)},this)},remove:function(a){this.monitorName==a&&(this.monitorName="");delete this.qStore[a]}};_.bindAll(q);'
 p175
 sg5
-S'\x88\x99\xcc$\xa0\xd3\xfc\xd5\xf8\x94n\xeb\xa0F\xa9\xff'
+S'\xcd}\xa6vu\xdf\xe6o\xacf%\xeb\x03f\xe1\xa2'
 p176
 ssS'./01_custom_formatters.js'
 p177
@@ -430,9 +430,9 @@ ssS'./06_admin/01_createLog/views/02_createLog.js'
 p193
 (dp194
 g3
-S'var LogCreator=Backbone.View.extend({template:_.template($("#logCreate_template").html()),className:"logCreator",initialize:function(){_.bindAll(this);var a=new InstrumentList;this.$el.html(this.template());this.instrSelect=new InstrumentsView({el:this.$("#instrSelect"),collection:a});$("body").append(this.el)},startDialog:function(){this.$el.dialog({autoOpen:!0,title:"Start New Log",width:700,position:["center","top"],buttons:{"Create New Log":this.submit},closeOnEscape:!1,open:function(){$("div.ui-dialog").css({top:"75px"});\n$(".ui-dialog-titlebar-close").hide()}})},submit:function(){var a=this.$("#instrSelect").val();if(""==a)alert("Please select an instrument");else{var b=new Log;q.start("newLog",{code:b.save,preArgs:{project:this.$("#log-pname").val(),observers:this.$("#log-obsv").val(),sa:this.$("#log-sa").val(),oa:this.$("#log-oa").val(),instrument:a,dataDir:this.$("#log-dir").val()},context:b,success:function(a){keOLARouter.navigate("logs/"+a.id,{trigger:!0});q.remove("newLog")}});q.request("newLog")}},onClose:function(){this.instrSelect.close();\nthis.$el.dialog("destroy")}});'
+S'var LogCreator=Backbone.View.extend({template:_.template($("#logCreate_template").html()),className:"logCreator",initialize:function(){_.bindAll(this);var a=new InstrumentList;this.$el.html(this.template());this.instrSelect=new InstrumentsView({el:this.$("#instrSelect"),collection:a});$("body").append(this.el)},startDialog:function(){this.$el.dialog({autoOpen:!0,title:"Start New Log",width:700,position:["center","top"],buttons:{"Create New Log":this.submit},closeOnEscape:!1,open:function(){$("div.ui-dialog").css({top:"75px"});\n$(".ui-dialog-titlebar-close").hide()}})},submit:function(){var a=this.$("#instrSelect").val();if(""==a)alert("Please select an instrument");else{var b=new Log;q.start("newLog",{code:b.save,preArgs:{project:this.$("#log-pname").val(),observers:this.$("#log-obsv").val(),pi:this.$("#log-pi").val(),sa:this.$("#log-sa").val(),oa:this.$("#log-oa").val(),instrument:a,dataDir:this.$("#log-dir").val()},context:b,success:function(a){keOLARouter.navigate("logs/"+a.id,{trigger:!0});q.remove("newLog")}});q.request("newLog")}},\nonClose:function(){this.instrSelect.close();this.$el.dialog("destroy")}});'
 p195
 sg5
-S'\xabOX\x01Q\x15\xf0\x1f4\xda\x8d_!\x1c=\x1e'
+S'ER\x86\xe9"\xc0\xeaO-RI:\x9c\x1e\xd9\xf9'
 p196
 ss.

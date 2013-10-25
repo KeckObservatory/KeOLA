@@ -112,7 +112,7 @@ def list_activeLogs():
     # Iterate through the cursor returned
     for al in aLogs:
         # Get the log entry for this active log
-        log = db.logs.find_one({"_id": al["logID"]}, {"project":1, "utcDate":1, "instrument":1, "observers":1})
+        log = db.logs.find_one({"_id": al["logID"]}, {"project":1, "utcDate":1, "instrument":1, "observers":1, "pi":1})
 
         # Add a human readable datestamp
         log["datestamp"] = log["utcDate"].strftime("%m/%d/%y (UTC)")
@@ -589,6 +589,7 @@ def list_logs():
 
         # Do a simple, case insensitive, regular expression match for search filter
         orList.append( {"observers": {"$regex": "(?i)"+search}} )
+        orList.append( {"pi": {"$regex": "(?i)"+search}} )
         orList.append( {"project": {"$regex": "(?i)"+search}} )
         orList.append( {"instrument": {"$regex": "(?i)"+search}} )
 

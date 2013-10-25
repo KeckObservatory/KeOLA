@@ -33,7 +33,7 @@
 
   <script type="text/template" id="activeLog-template">
           Project: <%= project %> (<%= instrument %>) started on <%= datestamp %> <br>
-	  Observers: <%= observers %>
+	  PI(s): <%= pi %>
   </script>
 
   
@@ -251,6 +251,7 @@
       </select>
       <p><label for="log-pname">Project Name:</label><input id="log-pname" type="text"></p>
       <label for="log-obsv">Observers:</label><input id="log-obsv" type="text">
+      <label for="log-pi">PI:</label><input id="log-pi" type="text">
       <label for="log-sa">SA:</label><input id="log-sa" type="text">
       <label for="log-oa">OA:</label><input id="log-oa" type="text">
       <label for="log-dir">Data Directory:</label><input id="log-dir" type="text">
@@ -260,6 +261,7 @@
       <label for="instrumentSelect">Instrument:&nbsp;&nbsp;&nbsp;&nbsp;<%= instrument %></label><br />
       <p><label for="log-pname">Project Name:</label><input id="log-pname" type="text" value="<%= project %>"></p>
       <label for="log-obsv">Observers:</label><input id="log-obsv" type="text" value="<%= observers %>">
+      <label for="log-pi">PI:</label><input id="log-pi" type="text" value="<%= pi %>">
       <label for="log-sa">SA:</label><input id="log-sa" type="text" value="<%= sa %>">
       <label for="log-oa">OA:</label><input id="log-oa" type="text" value="<%= oa %>">
       <label for="log-dir">Data Directories:</label>

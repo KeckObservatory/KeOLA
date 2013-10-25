@@ -27,7 +27,13 @@
                     id: 'project',
                     name: 'Project',
                     field: 'project',
-                    width: 180 
+                    width: 100 
+                },
+                {
+                    id: 'pi',
+                    name: 'PI',
+                    field: 'pi',
+                    width: 120 
                 },
                 {
                     id: 'observers',

@@ -74,6 +74,7 @@ for log in getSchedules.genLogs( d, db, errors ):
     # print "SA:         "+log["sa"]
     email_body = email_body+"\n"+"Instrument: "+log["instrument"]
     email_body = email_body+"\n"+"Project:    "+log["project"]
+    email_body = email_body+"\n"+"PI:         "+log["pi"]
     email_body = email_body+"\n"+"Observers:  "+log["observers"]
     email_body = email_body+"\n"+"SA:         "+log["sa"]
 

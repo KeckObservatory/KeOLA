@@ -150,25 +150,34 @@ def genLogs( d, db, errors ):
 
         projSplit = sched["ProjCode"].split("/")
         obsSplit = sched["Observers"].split("/")
+        piSplit = sched["Principal"].split("/")
 
         for i in range(len( obsList )) :
             for obs in [x for x in obsList[i] if x["instrEntry"]]:
                 protoLog = {"instrument": obs["instrEntry"]["name"],
                     "project": "",
                     "observers": "",
+                    "pi": "",
                     "sa": sched["SA"].strip(),
                     "oa": sched["OA"].strip(),
                     "utcDate": datetime.utcnow(),
                     "activeDirs": [],
                     "dataDirs": obs["dataDirs"] }
+                # observers
                 if i < len( obsSplit ) and obsSplit[i].strip()!="":
                     protoLog["observers"] = obsSplit[ i ].strip()
                 else:
                     errors.append("Warning: Failed to find observers for "+obs["instrEntry"]["name"]+" log" )
+                # projects
                 if i < len( projSplit ) and projSplit[i].strip()!="":
                     protoLog["project"] = projSplit[ i ].strip()
                 else:
                     errors.append("Warning: Failed to find project code for "+obs["instrEntry"]["name"]+" log")
+                # PIs
+                if i < len( piSplit ) and piSplit[i].strip()!="":
+                    protoLog["pi"] = piSplit[ i ].strip()
+                else:
+                    errors.append("Warning: Failed to find PI information for "+obs["instrEntry"]["name"]+" log")
 
                 outLogs.append( protoLog )
         

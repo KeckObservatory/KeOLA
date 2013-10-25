@@ -50,6 +50,7 @@
                 preArgs: {
                     project: this.$("#log-pname").val(),
                     observers: this.$("#log-obsv").val(),
+                    pi: this.$("#log-pi").val(),
                     sa: this.$("#log-sa").val(),
                     oa: this.$("#log-oa").val()
                 },
