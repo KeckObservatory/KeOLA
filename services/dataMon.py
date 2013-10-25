@@ -92,7 +92,8 @@ class ObsLog:
             # Catch potential errors trying to fetch scehdule data from the web
             try:
                 # Get the schedules for this log's date, select Keck I's schedule
-                schedule = getSchedules.fromWeb( self.log["utcDate"].date() )[1]
+                delta=timedelta(days=1)
+                schedule = getSchedules.fromWeb( self.log["utcDate"].date()-delta )[1]
             except urllib2.URLError:
                 print "Error getting twilight info from schedule, appending empty entry"
                 twilight = {}
