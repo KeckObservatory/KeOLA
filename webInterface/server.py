@@ -479,7 +479,7 @@ def save_log(logID, viewID):
     #print "saving to"+output_directory+" for project "+project
     output_file = logutdate+"_"+instrument+"_"+project+".html"
     with open("/home/keola/obsMonitor/SAVED_LOGS/"+output_file, "wb") as f:
-        f.write(output_from_template)
+        f.write(output_from_template.encode('ascii','replace'))
     return send_from_directory("/home/keola/obsMonitor/SAVED_LOGS/",output_file, as_attachment=True)
     #return render_template("save.html", fits=filteredFits, log=log, fvCols=fvCols, entries=entries)
 
@@ -760,6 +760,6 @@ def edit_log(id):
 # In debug mode right now to allow automatic reloading of code
 # For production: turn off debug
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
-    # app.run(host='0.0.0.0', port=5500, debug=True)
+    # app.run(host='0.0.0.0', port=5000)
+     app.run(host='0.0.0.0', port=5500, debug=True)
 
