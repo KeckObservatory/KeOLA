@@ -26,7 +26,7 @@ if monitor_on == False:
     print "Data monitor has stopped"
     print "Attempting to restart..."
     email_body = ""
-    os.system("python dataMon.py &")
+    os.system("python /home/keola/obsMonitor/services/dataMon.py &")
 
     # send email with results
     email_body = "DataMon was found not running"
