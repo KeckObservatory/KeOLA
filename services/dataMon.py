@@ -32,6 +32,7 @@ from datetime import datetime, timedelta, date
 import pyfits
 import pymongo, bson
 import warnings
+import fnmatch
 
 # Custom mododules for pulling in data from outside sources
 import urllib2
@@ -42,7 +43,7 @@ import getSchedules
 ### Configuration ###
 
 # How long (in seconds) should the script sleep in between monitoring cycles
-sleepTime = 2
+sleepTime = 15
 
 # How long (in minutes) between weather updates
 weatherPollInterval = 60
@@ -67,6 +68,12 @@ class ObsLog:
 
         # Query the database for this log's instrument information and store info
         self.instr = self.db.instruments.find_one({"name": self.instrument})
+
+        # Determine the fits file name pattern to be used to find new files
+        self.fnamePattern = "*.fits"
+        if "fnamePattern" in self.instr:
+            self.fnamePattern = self.instr["fnamePattern"]
+        print "The file pattern is "+self.fnamePattern
 
         # Determine if the "ignore_end_card" flag should be used in reading
         # this instruments FITS data
@@ -187,7 +194,7 @@ class ObsLog:
                 # When in the directory, see if the number of .fits files in this
                 # directory exceeds 0.  If it does, start the log with this as
                 # the dataDir
-                if len( [f for f in os.listdir(".") if f[-5:] == ".fits"] ) > 0: 
+                if len( [f for f in os.listdir(".") if fnmatch.fnmatch(f,self.fnamePattern) ] ) > 0: 
                     self.startDir(d)
 
                     # Print output and append a log entry 
@@ -246,7 +253,7 @@ class ObsLog:
             return 
         
         # Create a list of files in the current directory which end in ".fits"
-        curFiles = [f for f in os.listdir(".") if f[-5:] == ".fits"]
+        curFiles = [f for f in os.listdir(".") if  fnmatch.fnmatch(f,self.fnamePattern) ]
          
         if self.trackedFITS[dir] != curFiles:
             # Find the set of new files
