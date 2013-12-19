@@ -2,7 +2,7 @@ import psutil,os
 import smtplib
 from email.mime.text import MIMEText
 from datetime import datetime
-
+import subprocess
 
 # E-mail address to send messages to
 emailTo = "lrizzi@keck.hawaii.edu"
@@ -13,24 +13,33 @@ emailFrom = "keola@observinglogs.localdomain"
 # SMTP server
 smtpServer = "localhost"
 
-monitor_on = False
-for proc in psutil.process_iter():
+def check_if_running():
+  for proc in psutil.process_iter():
     cmdline = proc.cmdline
-    if len(cmdline)>1 and cmdline[0] == 'python' and cmdline[1] == 'dataMon.py':
+    if len(cmdline)>1 and 'python' in cmdline[0] and 'dataMon.py' in cmdline[1] and 'supervisor' not in cmdline[1]:
         p = psutil.Process(proc.pid)
         status = str(p.status)
         #print "Data Monitor is "+status+" PID: "+str(p.pid)
-        monitor_on = True
+        return p.pid
+
+
+monitor_on = False
+pid=check_if_running()
+if pid:
+    monitor_on = True
 
 if monitor_on == False:
     print "Data monitor has stopped"
     print "Attempting to restart..."
     email_body = ""
-    os.system("python /home/keola/obsMonitor/services/dataMon.py &")
-
+    proc = subprocess.Popen("python /home/keola/obsMonitor/services/dataMon.py", shell=True)
+    print proc.pid
     # send email with results
     email_body = "DataMon was found not running"
     email_body = email_body+'\n'+"Attempting to restart"
+    email_body = email_body+'\n It should now be running under pid '+str(proc.pid)
+    pid=check_if_running()
+    email_body = email_body+'\n Checking again:  pid '+str(pid)
     msg = MIMEText ( email_body )
     msg['Subject'] = "dataMon.py problem"
     msg['From'] = emailFrom
