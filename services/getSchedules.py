@@ -109,21 +109,19 @@ def genLogs( d, db, errors ):
                     obs["instrEntry"] = False
                 else:
                     instr = obs["instrEntry"]
-
                     if (instr["dirName"]+obs["accountID"]) not in splitTally:
                         # The first of the duplicate instrument+id combos
                         # doesn't need anything appended after the date
                         obs["dateSuffix"] = ""
-
                         # Create an initial tally entry that will be incremented
                         # every new duplication of this instrument+id combo
                         splitTally[ instr["dirName"]+obs["accountID"] ] = "_A"
                     else:
                         # Pull the relevant tally
                         tal = splitTally[ instr["dirName"]+obs["accountID"] ]
-
                         # Increment it "_A" -> "_B", etc.
                         tal = tal[:-1] + chr( ord( tal[-1] ) + 1 )
+                        splitTally [instr["dirName"]+obs["accountID"]] = tal
 
                         # Store it for later appending
                         obs["dateSuffix"] = tal
