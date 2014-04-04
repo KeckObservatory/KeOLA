@@ -45,7 +45,7 @@ def genLogs( d, db, errors ):
     dbInstruments = [x for x in db.instruments.find()]
 
     # List of months to be used for really lame lower casing method
-    mons = ["Jan", "Feb", "Mar", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    mons = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
     # Pull logs for this date
     for sched in fromWeb( d ).itervalues():
