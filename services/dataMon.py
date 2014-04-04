@@ -33,6 +33,7 @@ import pyfits
 import pymongo, bson
 import warnings
 import fnmatch
+import logging
 
 # Custom mododules for pulling in data from outside sources
 import urllib2
@@ -47,6 +48,10 @@ sleepTime = 15
 
 # How long (in minutes) between weather updates
 weatherPollInterval = 60
+
+# logging facility
+logging.basicConfig(filename='/home/keola/obsMonitor/dataMon.logdir/dataMon-'+time.strftime("%d%b%Y")+'.log', level=logging.DEBUG)
+
 
 
 ### Observation Log monitoring Class ###
@@ -73,7 +78,7 @@ class ObsLog:
         self.fnamePattern = "*.fits"
         if "fnamePattern" in self.instr:
             self.fnamePattern = self.instr["fnamePattern"]
-        print "The file pattern is "+self.fnamePattern
+        logging.info( "The file pattern is "+self.fnamePattern)
 
         # Determine if the "ignore_end_card" flag should be used in reading
         # this instruments FITS data
@@ -94,7 +99,7 @@ class ObsLog:
 
         # Catch if twilight information is missing, and if so, add it
         if "twilight" not in self.log:
-            print "Appending twilight information to log ", self.id
+            logging.info( "Appending twilight information to log " + str(self.id))
 
             # Catch potential errors trying to fetch scehdule data from the web
             try:
@@ -102,7 +107,7 @@ class ObsLog:
                 delta=timedelta(days=1)
                 schedule = getSchedules.fromWeb( self.log["utcDate"].date()-delta )[1]
             except urllib2.URLError:
-                print "Error getting twilight info from schedule, appending empty entry"
+                logging.warning( "Error getting twilight info from schedule, appending empty entry")
                 twilight = {}
             else:
                 # Parse out a nice dictionary for the twilight attributes
@@ -144,7 +149,7 @@ class ObsLog:
         try:
             w = weather[ self.instr["telescope"] ].current()
         except IOError:
-            print "Error opening weather log, appending empty entry"
+            logging.warning( "Error opening weather log, appending empty entry")
             w = {}
 
         wEntry = {"type": "weather",
@@ -198,7 +203,7 @@ class ObsLog:
                     self.startDir(d)
 
                     # Print output and append a log entry 
-                    print "Now watching", d, "for log", logID, "at", datetime.utcnow(), "UTC"
+                    logging.info( "Now watching"+str(d)+ "for log"+ str(logID)+ "at"+ str(datetime.utcnow())+ "UTC")
                     self.alertEntry( "Data found in "+ d +".  Now tracking." )
 
         # Now iterate through all the active directories
@@ -238,7 +243,6 @@ class ObsLog:
 
     def monitorDir(self, dir):
         """ Find any new fits files in this log's data directory and track them """
-
         # Try to change to the data directory for this log
         try:
             os.chdir(dir)
@@ -247,19 +251,19 @@ class ObsLog:
             self.stopDir( dir )
             
             # Print output and append log entry
-            print "Can no longer access", dir, "for log", str(self.id), ".  Removed from active monitoring."
+            logging.warning("Can no longer access"+ str(dir)+ "for log"+str(self.id)+ ".  Removed from active monitoring.")
             self.alertEntry( "Can no longer access "+ dir +". Removed it from active monitoring." )
 
             return 
         
         # Create a list of files in the current directory which end in ".fits"
         curFiles = [f for f in os.listdir(".") if  fnmatch.fnmatch(f,self.fnamePattern) ]
-         
         if self.trackedFITS[dir] != curFiles:
             # Find the set of new files
             newFiles = set( curFiles )-set( self.trackedFITS[dir] )
 
             for f in newFiles:
+                logging.info( "Found file " + f + ". Attempting to add to database")
                 # Find the time of most recent modification
                 modOn = datetime.fromtimestamp( os.stat(f).st_mtime )
 
@@ -272,15 +276,15 @@ class ObsLog:
                             fitsHdrs = pyfits.open(f)
                     except UserWarning:
                         if t != 2:
-                            print "Truncation caught, retrying in 5 seconds"
+                            logging.warning( "Truncation caught, retrying in 5 seconds")
                         else:
-                            print "Giving up on reading " + f + ".  Adding to exclusion list"
+                            logging.warning( "Giving up on reading " + f + ".  Adding to exclusion list")
                             self.excludeEntry(f, dir, "Repeated truncate error")
                     except IOError:
                         if t != 2:
-                            print "IOError caught, retrying in 5 seconds"
+                            logging.warning( "IOError caught, retrying in 5 seconds")
                         else:
-                            print "Giving up on reading " + f + ".  Adding to exclusion list"
+                            logging.warning( "Giving up on reading " + f + ".  Adding to exclusion list")
                             self.excludeEntry(f, dir, "Repeated IOError")
                     else:
                         # Successful, don't retry
@@ -388,12 +392,12 @@ while True:
     # Instantiate a new ObsLog for each new logID found
     for logID in set(activeLogIDs) - set(curLogIDs):
         curLogs[ logID ] = ObsLog(db, logID)
-        print "Tracking new log ", logID, " at ", datetime.utcnow(), "UTC"
+        logging.info( "Tracking new log "+str(logID)+ " at "+ str(datetime.utcnow())+ "UTC")
 
     # Remove any logs that have become inactive (removed from the activeLogs db) 
     for logID in set(curLogIDs) - set(activeLogIDs):
         del curLogs[ logID ]
-        print "Ended tracking of log ", logID, " at ", datetime.utcnow(), "UTC"
+        logging.info( "Ended tracking of log "+ str(logID)+ " at "+ str(datetime.utcnow())+ "UTC")
 
     #####
     # Weather requests
