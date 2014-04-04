@@ -281,11 +281,14 @@ def list_fits(logID, viewID):
                         pm = "-"
                     else:
                         pm = "+"
-                    a = abs(decVal/15)
-                    dd = int( a )
-                    mm = int((a-dd)*60)
-                    ss = (a - dd - (mm/60.0))*3600
-                    row[ tag ] = "{0}{1:02d}:{2:02d}:{3:05.2f}".format(pm, dd, mm, ss)
+                    try:    
+                        a = abs(int(decVal)/15)
+                        dd = int( a )
+                        mm = int((a-dd)*60)
+                        ss = (a - dd - (mm/60.0))*3600
+                        row[ tag ] = "{0}{1:02d}:{2:02d}:{3:05.2f}".format(pm, dd, mm, ss)
+                    except KeyError:
+                        row[ tag ] = "Failed conversion"
 
             # If there is a "enumAttr", find the fits attribute specified, and then
             # replace its value with the one specified by the enum if possible
@@ -373,6 +376,9 @@ def list_fits(logID, viewID):
                     row[ tag ] = round(row[ tag ],c["decimals"])
                 else:
                     row[ tag ] = "!KeyError!"
+
+            if "multiplication_factor" in c:
+                row[ tag ] = row [ tag ] * c["multiplication_factor"]
 
         # Include the "_id" to allow for fits comment posting
         row["_id"] = f["_id"]
