@@ -4,6 +4,8 @@ import urllib2
 import smtplib
 from email.mime.text import MIMEText
 from datetime import datetime
+import random
+import shutil
 
 # Default connection options work for now
 connection = pymongo.Connection()
@@ -22,6 +24,11 @@ emailFrom = "keola@observinglogs.localdomain"
 
 # SMTP server
 smtpServer = "localhost"
+
+# Directory where to save the user logs after adding the random string
+UserLogsDirectory = "/home/keola/obsMonitor/USER_LOGS"
+# Directory where the logs are saved when the user hits the "SAVE" button or at 2pm every day
+SavedLogsDirectory = "/home/keola/obsMonitor/SAVED_LOGS"
 
 ### JSON parsing handlers ###
 
@@ -62,6 +69,13 @@ for al in aLogs:
     email_body = email_body+"\n"+"http://observinglogs/SAVED_LOGS/"+filename+".html"
     email_body = email_body+"\n"
     f = urllib2.urlopen("http://observinglogs/save/"+str(al["logID"])+"/"+str(fitsview["_id"]))
+
+    # generate a random string to add to the file name
+    RandomString = ('%06x' % random.randrange(16**6)).upper()
+    randomFileName = filename+"_"+RandomString+".html"
+    # copy the file and add the random string
+    shutil.copy(SavedLogsDirectory+"/"+filename+".html",UserLogsDirectory+"/"+randomFileName)
+
 
 if emailResults:
     email_body = email_body+"\n"
