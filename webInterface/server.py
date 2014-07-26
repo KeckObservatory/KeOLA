@@ -27,8 +27,8 @@ app.secret_key = "NotVeryGoodSecretKey"+str( datetime.utcnow() )
 ### Connect to MongoDB ###
 
 # Default connection options work for now
-connection = pymongo.Connection()
-
+#connection = pymongo.Connection()
+connection = pymongo.MongoClient('observinglogs,vm-dr5',replicaSet='KEOLA')
 # Connection to obsLog database
 db = connection.obsLog
 
@@ -282,11 +282,12 @@ def list_fits(logID, viewID):
                     else:
                         pm = "+"
                     try:    
-                        a = abs(int(decVal)/15)
+                        a = abs(decVal/15)
                         dd = int( a )
                         mm = int((a-dd)*60)
-                        ss = (a - dd - (mm/60.0))*3600
+                        ss = int(((a-dd)*60-mm)*60)
                         row[ tag ] = "{0}{1:02d}:{2:02d}:{3:05.2f}".format(pm, dd, mm, ss)
+                        #row[ tag ] = decVal
                     except KeyError:
                         row[ tag ] = "Failed conversion"
 
