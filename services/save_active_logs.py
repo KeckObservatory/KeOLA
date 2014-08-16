@@ -6,10 +6,11 @@ from email.mime.text import MIMEText
 from datetime import datetime
 import random
 import shutil
+import glob, os
 
 # Default connection options work for now
-connection = pymongo.Connection()
-
+#connection = pymongo.Connection()
+connection = pymongo.MongoClient('observinglogs,vm-dr5',replicaSet='KEOLA')
 # Connection to obsLog database
 db = connection.obsLog
 
@@ -74,8 +75,19 @@ for al in aLogs:
     RandomString = ('%06x' % random.randrange(16**6)).upper()
     randomFileName = filename+"_"+RandomString+".html"
     # copy the file and add the random string
-    shutil.copy(SavedLogsDirectory+"/"+filename+".html",UserLogsDirectory+"/"+randomFileName)
+    # 1. check if a file with the same date and project already exists in the User Logs Directory
+    logfiles = glob.glob(UserLogsDirectory+"/"+filename+"*.html")
+    if logfiles:
+        print "The file already exists:"+filename
+        for logfile in logfiles:
+            os.remove(logfile)
 
+    shutil.copy(SavedLogsDirectory+"/"+filename+".html",UserLogsDirectory+"/"+randomFileName)
+    # 2. Copy to the remote webserver
+    try:
+        os.system('scp "%s" "%s"' % (UserLogsDirectory+"/"+randomFileName, "www2:/www/public/realpublic/inst/observinglogs"))
+    except:
+        print "Error in transferring file to the remote webserver"
 
 if emailResults:
     email_body = email_body+"\n"
