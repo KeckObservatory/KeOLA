@@ -10,7 +10,7 @@ import glob, os
 
 # Default connection options work for now
 #connection = pymongo.Connection()
-connection = pymongo.MongoClient('observinglogs,vm-dr5',replicaSet='KEOLA')
+connection = pymongo.MongoClient('observinglogs,observinglogs2,observinglogs3',replicaSet='KEOLA')
 # Connection to obsLog database
 db = connection.obsLog
 
@@ -85,7 +85,7 @@ for al in aLogs:
     shutil.copy(SavedLogsDirectory+"/"+filename+".html",UserLogsDirectory+"/"+randomFileName)
     # 2. Copy to the remote webserver
     try:
-        os.system('scp "%s" "%s"' % (UserLogsDirectory+"/"+randomFileName, "www2:/www/public/realpublic/inst/observinglogs"))
+        os.system('scp "%s" "%s"' % (UserLogsDirectory+"/"+randomFileName, "www:/www/public/realpublic/inst/observinglogs"))
     except:
         print "Error in transferring file to the remote webserver"
 
