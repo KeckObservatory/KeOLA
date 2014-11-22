@@ -84,10 +84,11 @@ for al in aLogs:
 
     shutil.copy(SavedLogsDirectory+"/"+filename+".html",UserLogsDirectory+"/"+randomFileName)
     # 2. Copy to the remote webserver
-    try:
-        os.system('scp "%s" "%s"' % (UserLogsDirectory+"/"+randomFileName, "www:/www/public/realpublic/inst/observinglogs"))
-    except:
-        print "Error in transferring file to the remote webserver"
+    # This is currently disabled as Julia has replaced it with a cron job that runs on the web server
+    #try:
+    #    os.system('scp "%s" "%s"' % (UserLogsDirectory+"/"+randomFileName, "www:/www/public/realpublic/inst/observinglogs"))
+    #except:
+    #    print "Error in transferring file to the remote webserver"
 
 if emailResults:
     email_body = email_body+"\n"
