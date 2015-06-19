@@ -265,7 +265,7 @@ def list_fits(logID, viewID):
                 try:
                     row[ tag ] = reduce(lambda memo, i: memo[i], fitsAttr, f)
                 except KeyError:
-                    row[ tag ] = "!KeyError!"
+                    row[ tag ] = "!KeyError!(1)"
             
             # If an attribute needs to be converted from decimal to sexagesimal
             # perform the conversion here
@@ -275,7 +275,7 @@ def list_fits(logID, viewID):
                 try:
                     decVal = reduce(lambda memo, i: memo[i], attr, f)
                 except KeyError:
-                    row[ tag ] = "!KeyError!"
+                    row[ tag ] = "!KeyError!(2)"
                 else:
                     if decVal < 0:
                         pm = "-"
@@ -354,7 +354,7 @@ def list_fits(logID, viewID):
                 try:
                     condition = str( reduce(lambda memo, i: memo[i], condAttr["attr"], f) )
                 except KeyError:
-                    row[ tag ] = "!KeyError!"
+                    row[ tag ] = "!KeyError!(3)"
                 else:
                     # Take the value returned by the above attribute, and try and access
                     # a corresponding index accessor list in the "condAttr" dictionary whose 
@@ -362,21 +362,21 @@ def list_fits(logID, viewID):
                     try:
                         attr = condAttr[ condition ] 
                     except KeyError:
-                        row[ tag ] = "N/A"
+                        row[ tag ] = ""
                     else:
                         # Finally, if all has been sucessful, try and dig into the fits entry
                         # using the accessor list provided
                         try:
-                            row[ tag ] = reduce(lambda memo, i: memo[i], attr, f) 
+                                row[ tag ] = reduce(lambda memo, i: memo[i], attr, f) 
                         except KeyError:
-                            row[ tag ] = "!KeyError!"
+                            row[ tag ] = "!KeyError!(4)"
 
               # allow columns to accept a format
             if "decimals" in c: 
                 if isinstance(row[ tag ],float):
                     row[ tag ] = round(row[ tag ],c["decimals"])
-                else:
-                    row[ tag ] = "!KeyError!"
+                #else:
+                #    row[ tag ] = 
 
             if "multiplication_factor" in c:
                 row[ tag ] = row [ tag ] * c["multiplication_factor"]
