@@ -1,3 +1,5 @@
 logs/*.log
 *.*~
 SAVED_LOGS
+dataMon.logdir/*.log
+*.pyc
