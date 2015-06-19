@@ -350,7 +350,8 @@ class ObsLog:
 warnings.filterwarnings('error', '.*truncated.*');
 
 # Connect to MongoDB database (default connection options work for now)
-conn = pymongo.Connection()
+#conn = pymongo.Connection()
+conn = pymongo.MongoClient('observinglogs,observinglogs2,observinglogs3',replicaSet='KEOLA')
 db = conn.obsLog
 
 # Instatiate two getWeather.Weather()s to pull data from meteorolgical logs
