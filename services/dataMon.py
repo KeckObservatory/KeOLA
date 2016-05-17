@@ -271,10 +271,15 @@ class ObsLog:
                 for t in range(3):
                     try:
                         if self.missing_end_card:
-                            fitsHdrs = pyfits.open(f, ignore_missing_end=True)
+                            #fitsHdrs = pyfits.open(f, ignore_missing_end=True)
+                            fitsHdrs = pyfits.getheader(f,ignore_missing_end=True)
                         else:
-                            fitsHdrs = pyfits.open(f)
-                        fitsHdrs.verify('fix')
+                            #fitsHdrs = pyfits.open(f)
+                            fitsHdrs = pyfits.getheader(f)
+                        #try:
+                        #   fitsHdrs.verify('fix')
+                        #except:
+                        #    pass
                     except UserWarning:
                         if t != 2:
                             logging.warning( "Truncation caught, retrying in 5 seconds")
@@ -302,20 +307,35 @@ class ObsLog:
                     # headers[0]["airmass"]
 
                     headers = [] 
-                    for h in fitsHdrs:
-                            headDict = {}
-                        #try:
-                            for k, v in h.header.iteritems():
-                                # Dictionary keys must not have "." for mongoDB, make sure none do
-                                key = str.replace(k, ".", "-") 
-                                if type(v) is str:
-                                   v = v.strip()
-                                headDict[key] = v
-                            headers.append( headDict )
-                        #except:
-                        #    print "Error parsing a keyword"
-                        #    print h.header
-                        #    raise RuntimeError
+                    #for h in fitsHdrs:
+                    headDict = {}
+                    #try:
+                    for k in fitsHdrs.keys():
+                        if k == "COMMENT":
+                            continue
+                        if k =="":
+                            continue
+                        key = str.replace(k,".","-")
+                        try:
+                            v = fitsHdrs[k]
+                            if type(v) is str:
+                                v = v.strip()
+                                v = str.replace(v,"'","")
+                        except:
+                            v='!KeyError!'
+                        headDict[key]=v
+                    
+                    #for k, v in fitsHdrs.iteritems():
+                    #            # Dictionary keys must not have "." for mongoDB, make sure none do
+                    #            key = str.replace(k, ".", "-") 
+                    #            if type(v) is str:
+                    #               v = v.strip()
+                    #            headDict[key] = v
+                    headers.append( headDict )
+                    #except:
+                    #        print "Error parsing a keyword for file "+str(f)
+                    #        print key
+                    #        #raise RuntimeError
 
                     # Make sure this fits file belongs to the correct instrument
                     try:
@@ -336,8 +356,13 @@ class ObsLog:
                         "headers": headers }
 
                     # Insert record into the database
+                    #try:
+                    print "adding file "+str(f)
+                    #print "header: "+str(fRecord)
                     self.db.fits.insert( fRecord )
-
+                    #except:
+                    #    self.alertEntry("Warning: file %s has been skipped because of a bad header" % (str(f)))
+                    #    print "Skipping file "+str(f)
                     # Insert new entry for frontend showing a new file was found
                     #   Inserting the fits ID 
                     fEntry = {"logID": self.id,
@@ -416,7 +441,10 @@ while True:
     for req in db.entries.find({"type": "weatherRequest"}):
         logID = req["logID"]
         if logID not in responded:
-            curLogs[ logID ].weatherEntry( weather )
+            try:
+                curLogs[ logID ].weatherEntry( weather )
+            except:
+                logging.info("Error parsing weather info %s" % (str(weather)))
             responded.append( logID )
         db.entries.remove( req )
 
