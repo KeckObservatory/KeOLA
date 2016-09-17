@@ -311,15 +311,15 @@ class ObsLog:
                     headDict = {}
                     #try:
                     for k in fitsHdrs.keys():
-                        if k == "COMMENT":
+                        if k == "COMMENT" and fitsHdrs.keys().count("COMMENT")>1:
                             continue
                         if k =="":
                             continue
                         key = str.replace(k,".","-")
                         try:
                             v = fitsHdrs[k]
-                            if type(v) is str:
-                                v = v.strip()
+                            if type(v) is str or k == "COMMENT":
+                                v = str(v).strip()
                                 v = str.replace(v,"'","")
                         except:
                             v='!KeyError!'
