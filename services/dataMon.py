@@ -26,17 +26,24 @@
 #
 ################################################################
 
-import os, time
+import os, time, sys
 
 from datetime import datetime, timedelta, date
-import pyfits
+try: 
+    from astropy.io import fits as pyfits
+except ImportError:
+    import pyfits
 import pymongo, bson
 import warnings
 import fnmatch
 import logging
 
 # Custom mododules for pulling in data from outside sources
-import urllib2
+#import urllib2
+try:
+    from urllib.request import urlopen
+except ImportError:
+    from urllib2 import urlopen
 import getWeather
 import getSchedules
 
@@ -68,7 +75,7 @@ class ObsLog:
         self.log = self.db.logs.find_one({"_id": logID})
 
         # Store the instrument name for conevenience 
-        self.instrument = self.log["instrument"]
+        self.instrument = self.log["instrument"].upper()
 
 
         # Query the database for this log's instrument information and store info
@@ -106,7 +113,7 @@ class ObsLog:
                 # Get the schedules for this log's date, select Keck I's schedule
                 delta=timedelta(days=1)
                 schedule = getSchedules.fromWeb( self.log["utcDate"].date()-delta )[1]
-            except urllib2.URLError:
+            except urllib.URLError:
                 logging.warning( "Error getting twilight info from schedule, appending empty entry")
                 twilight = {}
             else:
@@ -269,6 +276,7 @@ class ObsLog:
 
                 # Try to open the fits file in pyfits
                 for t in range(3):
+                    logging.info( "Try add number "+str(t))
                     try:
                         if self.missing_end_card:
                             #fitsHdrs = pyfits.open(f, ignore_missing_end=True)
@@ -292,6 +300,8 @@ class ObsLog:
                         else:
                             logging.warning( "Giving up on reading " + f + ".  Adding to exclusion list")
                             self.excludeEntry(f, dir, "Repeated IOError")
+                    except:
+                        self.excludeEntry(f,dir,"Something wrong with this file")
                     else:
                         # Successful, don't retry
                         break
@@ -314,6 +324,8 @@ class ObsLog:
                         if k == "COMMENT" and fitsHdrs.keys().count("COMMENT")>1:
                             continue
                         if k =="":
+                            continue
+                        if "HEART" in k or "TARGEL" in k or "TARGAZ" in k:
                             continue
                         key = str.replace(k,".","-")
                         try:
@@ -343,7 +355,7 @@ class ObsLog:
                     except KeyError:
                         self.alertEntry( "Warning: " + str( self.instrAttr ) + " attribute not found for " + f)
                     else: 
-                        if self.instrument not in str(fitsInstr):
+                        if self.instrument.lower() not in str(fitsInstr).lower():
                             if self.alternateName != "None" and self.alternateName not in str(fitsInstr):
                                 self.alertEntry( "Warning: Neither " + self.instrument+" nor " + self.alternateName + " in instrument keyword of " + f)
                             elif self.alternateName == "None":
@@ -357,7 +369,7 @@ class ObsLog:
 
                     # Insert record into the database
                     #try:
-                    print "adding file "+str(f)
+                    sys.stdout.write( "adding file "+str(f) + "\n")
                     #print "header: "+str(fRecord)
                     self.db.fits.insert( fRecord )
                     #except:

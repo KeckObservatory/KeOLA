@@ -49,8 +49,7 @@ logDir = "."
 errors = [] 
 
 # Open a connection to the obsLog mongoDB database
-conn = pymongo.MongoClient('observinglogs,observinglogs2,observinglogs3',replicaSet='KEOLA')
-db = conn.obsLog
+db = pymongo.Connection().obsLog
 
 
 # Mark old logs as inactive if cleanLogs is True ###

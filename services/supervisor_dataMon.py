@@ -29,11 +29,11 @@ if pid:
     monitor_on = True
 
 if monitor_on == False:
-    print "Data monitor has stopped"
-    print "Attempting to restart..."
+    print ("Data monitor has stopped")
+    print ("Attempting to restart...")
     email_body = ""
     proc = subprocess.Popen("python /home/keola/obsMonitor/services/dataMon.py",shell=True)
-    print proc.pid
+    print (proc.pid)
     # send email with results
     email_body = "DataMon was found not running"
     email_body = email_body+'\n'+"Attempting to restart"

@@ -1,3 +1,5 @@
+#!/observinglogs/anaconda3/bin/python
+
 import sys, os
 
 # Make sure to replace "/KeOLA/webInterface" with the actual working directory 

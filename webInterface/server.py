@@ -1,3 +1,4 @@
+#! /observinglogs/anaconda3/bin/python
 import pymongo
 from bson.objectid import ObjectId
 import json_util
@@ -6,7 +7,7 @@ from functools import wraps
 from datetime import datetime
 from hashlib import md5
 import os.path
-from flask.ext.autoindex import AutoIndex
+#from flask_autoindex import AutoIndex
 
 
 # Redirect output to std_err to allow for error logging
@@ -28,7 +29,7 @@ app.secret_key = "NotVeryGoodSecretKey"+str( datetime.utcnow() )
 
 # Default connection options work for now
 #connection = pymongo.Connection()
-connection = pymongo.MongoClient('observinglogs,vm-dr5',replicaSet='KEOLA')
+connection = pymongo.MongoClient('observinglogs',replicaSet='KEOLA')
 # Connection to obsLog database
 db = connection.obsLog
 

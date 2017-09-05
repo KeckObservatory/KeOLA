@@ -1,8 +1,11 @@
 # Library that enables  HTTP requests
-import urllib2
+try:
+    from urllib.request import urlopen
+except ImportError:
+    from urllib2 import urlopen
 
 from datetime import date, timedelta, datetime
-
+import sys
 
 def fromWeb( inDate ):
     """ Pulls schedules for a given date from the website and parses them into a dictionary """
@@ -12,9 +15,15 @@ def fromWeb( inDate ):
     for tel in [1, 2]:
         schedules[ tel ] = {}
 
-        response = urllib2.urlopen( url + str(tel) )
-        result = response.read()
-        for s in result.split("\n"):
+        response = urlopen( url + str(tel) )
+        #result = response.read()
+        #print(response)
+        for line_number,line in enumerate(response):
+        #sys.exit(0)
+        #for s in result.split("\n"):
+        #for s in result:
+            s=line.decode('utf-8')
+            #print (s)
             if "=" in s:
                 kv = s.split("=")
                 schedules[ tel ][ kv[0] ] = kv[1]
@@ -48,7 +57,7 @@ def genLogs( d, db, errors ):
     mons = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
     # Pull logs for this date
-    for sched in fromWeb( d ).itervalues():
+    for sched in fromWeb( d ).values():
 
         # Implentation of Dr. Rizzi's finite state machine algorithm for
         # parsing schedule entries.  The result we want is an array
