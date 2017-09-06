@@ -12,9 +12,9 @@ def fromWeb( inDate ):
     url = "http://www/observing/schedule/ws/telsched.php?date=" + inDate.strftime("%Y-%m-%d") + "&tel="
 
     schedules = {}
-    for tel in [1, 2]:
+    for tel in [2]:
         schedules[ tel ] = {}
-
+        print(url)
         response = urlopen( url + str(tel) )
         #result = response.read()
         #print(response)
@@ -114,7 +114,10 @@ def genLogs( d, db, errors ):
                     errors.append("Omit: No instrument found matching " + obs["instrEntry"] )
                     obs["instrEntry"] = False
                 elif obs["accountID"] == "":
-                    errors.append("Omit: No account ID found for "+ obs["instrEntry"]["name"]+" log." )
+                    try:
+                        errors.append("Omit: No account ID found for "+ obs["instrEntry"]["name"]+" log." )
+                    except:
+                        errors.append("Omit: No account ID found for "+ str(obs["instrEntry"])+" log." )
                     obs["instrEntry"] = False
                 else:
                     instr = obs["instrEntry"]
