@@ -12,7 +12,7 @@ def fromWeb( inDate ):
     url = "http://www/observing/schedule/ws/telsched.php?date=" + inDate.strftime("%Y-%m-%d") + "&tel="
 
     schedules = {}
-    for tel in [2]:
+    for tel in [1,2]:
         schedules[ tel ] = {}
         print(url)
         response = urlopen( url + str(tel) )
