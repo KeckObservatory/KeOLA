@@ -58,6 +58,8 @@ def genLogs( d, db, errors ):
 
     # Pull logs for this date
     for sched in fromWeb( d ).values():
+        #print("******************** SCHEDULE ENTRY ******************")
+        #print("Sched: "+str(sched))
 
         # Implentation of Dr. Rizzi's finite state machine algorithm for
         # parsing schedule entries.  The result we want is an array
@@ -109,8 +111,11 @@ def genLogs( d, db, errors ):
         splitTally = {}
 
         for obsGroup in obsList:
+            #print("******************** OBSGROUP ENTRY ******************")
+            #print(str(obsList))
             for obs in obsGroup:
-                if type(obs["instrEntry"]) is str:
+                #print (type(obs['instrEntry']))
+                if type(obs["instrEntry"]) is not dict:
                     errors.append("Omit: No instrument found matching " + obs["instrEntry"] )
                     obs["instrEntry"] = False
                 elif obs["accountID"] == "":
