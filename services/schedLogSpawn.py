@@ -59,7 +59,7 @@ if cleanLogs:
     db.drop_collection("activeLogs")
 
 # Get today's date and store it
-d = date.today()-timedelta(days=1)
+d = date.today() # -timedelta(days=1)
 # print "New logs for "+str(d)+"."
 
 email_body = "New logs for "+str(d)+"."
