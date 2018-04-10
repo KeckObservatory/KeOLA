@@ -42,8 +42,9 @@ import logging
 #import urllib2
 try:
     from urllib.request import urlopen
+    from urllib import URLError
 except ImportError:
-    from urllib2 import urlopen
+    from urllib2 import urlopen,URLError
 import getWeather
 import getSchedules
 
@@ -113,7 +114,7 @@ class ObsLog:
                 # Get the schedules for this log's date, select Keck I's schedule
                 delta=timedelta(days=1)
                 schedule = getSchedules.fromWeb( self.log["utcDate"].date()-delta )[1]
-            except urllib.URLError:
+            except URLError:
                 logging.warning( "Error getting twilight info from schedule, appending empty entry")
                 twilight = {}
             else:
