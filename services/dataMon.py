@@ -272,6 +272,10 @@ class ObsLog:
 
             for f in newFiles:
                 logging.info( "Found file " + f + ". Attempting to add to database")
+                # check file length:
+                if os.path.getsize(f) == 0:
+                    logging.warn('file %s has zero lengh. skipping for now...' % str(f))
+                    continue
                 # Find the time of most recent modification
                 modOn = datetime.fromtimestamp( os.stat(f).st_mtime )
 
@@ -302,7 +306,7 @@ class ObsLog:
                             logging.warning( "Giving up on reading " + f + ".  Adding to exclusion list")
                             self.excludeEntry(f, dir, "Repeated IOError")
                     except:
-                        self.excludeEntry(f,dir,"Something wrong with this file")
+                        self.excludeEntry(f,dir,"Something wrong with this file: %s")
                     else:
                         # Successful, don't retry
                         break
