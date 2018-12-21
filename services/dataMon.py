@@ -272,6 +272,9 @@ class ObsLog:
 
             for f in newFiles:
                 logging.info( "Found file " + f + ". Attempting to add to database")
+                # esclude files with "mask" in their name
+                if 'mask' in f:
+                    continue
                 # check file length:
                 if os.path.getsize(f) == 0:
                     logging.warn('file %s has zero lengh. skipping for now...' % str(f))
