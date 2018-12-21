@@ -3,3 +3,6 @@ logs/*.log
 SAVED_LOGS
 dataMon.logdir/*.log
 *.pyc
+USER_LOGS
+dataMon.logdir
+*.log
