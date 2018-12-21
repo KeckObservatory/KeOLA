@@ -49,7 +49,7 @@ logDir = "."
 errors = [] 
 
 # Open a connection to the obsLog mongoDB database
-conn = pymongo.MongoClient('observinglogs,observinglogs2,observinglogs3',replicaSet='KEOLA')
+conn = pymongo.MongoClient('observinglogs:27017')
 db = conn.obsLog
 
 
