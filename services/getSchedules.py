@@ -71,7 +71,7 @@ def genLogs( d, db, errors ):
         schedules = getSchedule(d, telescope)
         for run in schedules:
             log = {}
-            log['instrument'] = run['Instrument']
+
             log['project'] = run['ProjCode']
             log['observers'] = run['Observers']
             log['pi'] = run['PiLastName']
@@ -94,8 +94,10 @@ def genLogs( d, db, errors ):
                 run['Instrument'] = run['Instrument'].split('-')[0]
             if 'HIRES' in run['Instrument']:
                 run['Instrument'] = 'hires'
+
             curInstrument = db.instruments.find_one({'name': run['Instrument'].upper()})
             if curInstrument is not None:
+                log['instrument'] = run['Instrument'].upper()
                 obs = {}
                 obs['date'] = d + timedelta(days=1)
                 obs['accountID'] = "".join([str(s) for s in run['Account'] if s.isdigit()])
