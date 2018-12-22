@@ -76,16 +76,16 @@ def genLogs( d, db, errors ):
             log['observers'] = run['Observers']
             log['pi'] = run['PiLastName']
 
-            # retrieve SA name
+            # retrieve OA name
             for staff in filter(
                     lambda nightstaff: (('oa' in nightstaff['Type']) and (nightstaff['TelNr'] == str(telescope))),
                     employees):
-                log['sa'] = staff['FirstName'] + " " + staff['LastName']
-            # retrieve OA name
+                log['oa'] = staff['FirstName'] + " " + staff['LastName']
+            # retrieve SA name
             for staff in filter(
-                    lambda nightstaff: ((nightstaff['Type'] == 'oa') and (nightstaff['TelNr'] == str(telescope))),
+                    lambda nightstaff: ((nightstaff['Type'] == 'sa') and (nightstaff['TelNr'] == str(telescope))),
                     employees):
-                log['oa'] = staff['FirstName']
+                log['sa'] = staff['FirstName'] + " " + staff['LastName']
 
             log['utcDate'] = datetime.utcnow()
             # retrieve protodirs structure
