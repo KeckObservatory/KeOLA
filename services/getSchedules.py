@@ -78,7 +78,7 @@ def genLogs( d, db, errors ):
 
             # retrieve SA name
             for staff in filter(
-                    lambda nightstaff: ((nightstaff['Type'] == 'sa') and (nightstaff['TelNr'] == str(telescope))),
+                    lambda nightstaff: (('oa' in nightstaff['Type']) and (nightstaff['TelNr'] == str(telescope))),
                     employees):
                 log['sa'] = staff['FirstName'] + " " + staff['LastName']
             # retrieve OA name
