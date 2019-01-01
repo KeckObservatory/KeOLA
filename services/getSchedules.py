@@ -76,6 +76,9 @@ def genLogs( d, db, errors ):
             log['observers'] = run['Observers']
             log['pi'] = run['PiLastName']
 
+            # use default values to prevent failures when either the OA or teh SA are not specified
+            log['oa'] = log['sa'] = 'UNKNOWN'
+
             # retrieve OA name
             for staff in filter(
                     lambda nightstaff: (('oa' in nightstaff['Type']) and (nightstaff['TelNr'] == str(telescope))),
@@ -83,7 +86,7 @@ def genLogs( d, db, errors ):
                 log['oa'] = staff['FirstName'] + " " + staff['LastName']
             # retrieve SA name
             for staff in filter(
-                    lambda nightstaff: ((nightstaff['Type'] == 'sa') and (nightstaff['TelNr'] == str(telescope))),
+                    lambda nightstaff: (('sa' in nightstaff['Type']) and (nightstaff['TelNr'] == str(telescope))),
                     employees):
                 log['sa'] = staff['FirstName'] + " " + staff['LastName']
 
