@@ -58,7 +58,7 @@ sleepTime = 15
 weatherPollInterval = 60
 
 # logging facility
-logging.basicConfig(filename='/home/keola/obsMonitor/dataMon.logdir/dataMon-'+time.strftime("%d%b%Y")+'.log', level=logging.DEBUG)
+logging.basicConfig(filename='/home/keola/obsMonitor/KeOLA/dataMon.logdir/dataMon-'+time.strftime("%d%b%Y")+'.log', level=logging.DEBUG)
 
 
 
