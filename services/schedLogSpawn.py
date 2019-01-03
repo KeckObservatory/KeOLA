@@ -19,6 +19,8 @@ from email.mime.text import MIMEText
 # Should we remove old active logs when this script is run?
 cleanLogs = True
 
+# degub mode
+debug = False
 
 # Should we email the errors?
 emailErrors = False
@@ -49,7 +51,7 @@ logDir = "."
 errors = [] 
 
 # Open a connection to the obsLog mongoDB database
-conn = pymongo.MongoClient('observinglogs,observinglogs2,observinglogs3',replicaSet='KEOLA')
+conn = pymongo.MongoClient('observinglogs:27017')
 db = conn.obsLog
 
 
@@ -59,7 +61,8 @@ if cleanLogs:
     db.drop_collection("activeLogs")
 
 # Get today's date and store it
-d = date.today() # -timedelta(days=1)
+d = date.today()
+
 # print "New logs for "+str(d)+"."
 
 email_body = "New logs for "+str(d)+"."
@@ -67,13 +70,17 @@ email_body = "New logs for "+str(d)+"."
 # Pull Schedules from the web for today, and generate logs for them
 for log in getSchedules.genLogs( d, db, errors ):
     # Save each new log to the database
-    db.logs.save( log )
-    #print ""
-    #print "Instrument: "+log["instrument"]
-    #print "Project:    "+log["project"]
-    #print "Observers:  "+log["observers"]
-    #print "SA:         "+log["sa"]
-    #print "ActiveDirs: "+log["dataDirs"][0]
+    print(log)
+
+    if debug is False:
+        db.logs.save( log )
+    else:
+        print("")
+        print("Instrument: "+log["instrument"])
+        print("Project:    "+log["project"])
+        print("Observers:  "+log["observers"])
+        print("SA:         "+log["sa"])
+        print("ActiveDirs: "+log["dataDirs"][0])
     email_body = email_body+"\n"+"Instrument: "+log["instrument"]
     email_body = email_body+"\n"+"Project:    "+log["project"]
     email_body = email_body+"\n"+"PI:         "+log["pi"]
@@ -83,7 +90,8 @@ for log in getSchedules.genLogs( d, db, errors ):
 
 
     # Mark each new log as active
-    db.activeLogs.save({"logID": log["_id"]})
+    if debug is False:
+        db.activeLogs.save({"logID": log["_id"]})
 
 
 # If any error messages have built up
@@ -110,7 +118,7 @@ if len(errors) != 0:
         with open( logDir +"/" + dString + "_error.log" , "w") as f:
             f.write( errorOut )
 
-if emailResults:
+if emailResults and debug is False:
     msg = MIMEText ( email_body )
     msg['Subject'] = " Observation Log: New logs for today."
     msg['From'] = emailFrom

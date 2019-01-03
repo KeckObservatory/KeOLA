@@ -113,13 +113,10 @@ class ObsLog:
             try:
                 # Get the schedules for this log's date, select Keck I's schedule
                 delta=timedelta(days=1)
-                schedule = getSchedules.fromWeb( self.log["utcDate"].date()-delta )[1]
+                twilight = getSchedules.getTwilight(self.log["utcDate"].date()-delta)
             except URLError:
                 logging.warning( "Error getting twilight info from schedule, appending empty entry")
                 twilight = {}
-            else:
-                # Parse out a nice dictionary for the twilight attributes
-                twilight = getSchedules.parseTwilight( schedule )
 
             # Append and save it to the log
             self.log["twilight"] = twilight
