@@ -63,6 +63,7 @@ def genLogs( d, db, errors ):
     night_staff = getNightStaff(d)
 
     suffixes = ['', '_B', '_C', '_D', '_E']
+    instruments_used_tonight = []
 
     employees = getNightStaff(d)
 
@@ -104,7 +105,11 @@ def genLogs( d, db, errors ):
                 obs = {}
                 obs['date'] = d + timedelta(days=1)
                 obs['accountID'] = "".join([str(s) for s in run['Account'] if s.isdigit()])
+                instruments_used_tonight.append(log['instrument'])
+                number_of_occurrences_of_this_instrument = instruments_used_tonight.count(log['instrument'])
+                suffix_index = number_of_occurrences_of_this_instrument-1
                 obs['dateSuffix'] = suffixes[suffix_index]
+
                 suffix_index += 1
                 dataDirs = []
                 for pd in curInstrument["protoDirs"]:
