@@ -68,7 +68,7 @@ d = date.today()
 email_body = "New logs for "+str(d)+"."
 
 # Pull Schedules from the web for today, and generate logs for them
-for log in getSchedules.genLogs( d, db, errors ):
+for log in getSchedules.genLogs_multiple_instruments( d, db, errors ):
     # Save each new log to the database
     print(log)
 
@@ -80,7 +80,7 @@ for log in getSchedules.genLogs( d, db, errors ):
         print("Project:    "+log["project"])
         print("Observers:  "+log["observers"])
         print("SA:         "+log["sa"])
-        print("ActiveDirs: "+log["dataDirs"][0])
+        print("DataDirs: "+str(log["dataDirs"]))
     email_body = email_body+"\n"+"Instrument: "+log["instrument"]
     email_body = email_body+"\n"+"Project:    "+log["project"]
     email_body = email_body+"\n"+"PI:         "+log["pi"]

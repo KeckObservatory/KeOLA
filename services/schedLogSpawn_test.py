@@ -23,7 +23,7 @@ import sys
 cleanLogs = True
 
 # degub mode
-debug = False
+debug = True
 
 # Should we email the errors?
 emailErrors = False
@@ -77,16 +77,18 @@ for log in getSchedules.genLogs_multiple_instruments( d, db, errors ):
     print(log)
 
     if debug is False:
-        answer = raw_input("do you want to create this log?")
+        answer = raw_input("do you want to create this log (y/n) ?")
         if 'y' in answer:
             db.logs.save( log )
-            db.activeLogs.save({"logID": log["_id"]})
+            answer = raw_input("do you want to mark this log as active (y/n) ?")
+            if 'y' in answer:
+                db.activeLogs.save({"logID": log["_id"]})
     else:
         print("Instrument: "+log["instrument"])
         print("Project:    "+log["project"])
         print("Observers:  "+log["observers"])
         print("SA:         "+log["sa"])
-        print("ActiveDirs: "+log["dataDirs"][0])
+        print("DataDirs: "+str(log["dataDirs"]))
     email_body = email_body+"\n"+"Instrument: "+log["instrument"]
     email_body = email_body+"\n"+"Project:    "+log["project"]
     email_body = email_body+"\n"+"PI:         "+log["pi"]
