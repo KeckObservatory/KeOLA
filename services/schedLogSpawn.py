@@ -70,9 +70,11 @@ email_body = "New logs for "+str(d)+"."
 # Pull Schedules from the web for today, and generate logs for them
 for log in getSchedules.genLogs_multiple_instruments( d, db, errors ):
     # Save each new log to the database
+    print("")
     print(log)
 
     if debug is False:
+        print("Saving log: %s" % str(log))
         db.logs.save( log )
     else:
         print("")
@@ -91,6 +93,7 @@ for log in getSchedules.genLogs_multiple_instruments( d, db, errors ):
 
     # Mark each new log as active
     if debug is False:
+        print("Marking log as active: %s" % str(log["_id"]))
         db.activeLogs.save({"logID": log["_id"]})
 
 

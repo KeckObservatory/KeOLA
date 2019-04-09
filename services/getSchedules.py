@@ -99,9 +99,9 @@ def genLogs( d, db, errors ):
             if '-' in run['Instrument']:
                 run['Instrument'] = run['Instrument'].split('-')[0]
             if 'HIRES' in run['Instrument']:
-                run['Instrument'] = 'hires'
+                run['Instrument'] = 'HIRES'
             if 'LRIS' in run['Instrument']:
-                run['Instrument'] = 'lris'
+                run['Instrument'] = 'LRIS'
 
 
             curInstrument = db.instruments.find_one({'name': run['Instrument'].upper()})
@@ -181,9 +181,9 @@ def genLogs_multiple_instruments( d, db, errors ):
                 if '-' in instruments[index]:
                     instruments[index] = instruments[index].split('-')[0]
                 if 'HIRES' in instruments[index]:
-                    instruments[index] = 'hires'
+                    instruments[index] = 'HIRES'
                 if 'LRIS' in instruments[index]:
-                    instruments[index] = 'lris'
+                    instruments[index] = 'LRIS'
             
             # now loops through the instruments for this run, and generate the logs
             for instrument in instruments:
@@ -215,6 +215,7 @@ def genLogs_multiple_instruments( d, db, errors ):
                     log['observers'] = observers
                     log['pi'] = pi
                     log['instrument'] = instrument
+                    log['utcDate'] = utcDate
                     outLogs.append(log)
                 else:
                     print("No instrument entry for <%s>" % (run['Instrument'].upper()))
