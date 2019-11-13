@@ -33,6 +33,9 @@ try:
     from astropy.io import fits as pyfits
 except ImportError:
     import pyfits
+from astropy.io.fits.card import Undefined, UNDEFINED 
+
+import functools
 import pymongo, bson
 import warnings
 import fnmatch
@@ -42,7 +45,8 @@ import logging
 #import urllib2
 try:
     from urllib.request import urlopen
-    from urllib import URLError
+    #from urllib import URLError
+    from urllib import error
 except ImportError:
     from urllib2 import urlopen,URLError
 import getWeather
@@ -114,7 +118,7 @@ class ObsLog:
                 # Get the schedules for this log's date, select Keck I's schedule
                 delta=timedelta(days=1)
                 twilight = getSchedules.getTwilight(self.log["utcDate"].date()-delta)
-            except URLError:
+            except: 
                 logging.warning( "Error getting twilight info from schedule, appending empty entry")
                 twilight = {}
 
@@ -325,8 +329,9 @@ class ObsLog:
                     #for h in fitsHdrs:
                     headDict = {}
                     #try:
+                    #print(fitsHdrs.keys())
                     for k in fitsHdrs.keys():
-                        if k == "COMMENT" and fitsHdrs.keys().count("COMMENT")>1:
+                        if k == "COMMENT" and list(fitsHdrs.keys()).count("COMMENT")>1:
                             continue
                         if k =="":
                             continue
@@ -340,6 +345,9 @@ class ObsLog:
                                 v = str.replace(v,"'","")
                         except:
                             v='!KeyError!'
+                        if isinstance(v, Undefined):
+                            v = 'UNDEFINED'
+
                         headDict[key]=v
                     
                     #for k, v in fitsHdrs.iteritems():
@@ -356,7 +364,7 @@ class ObsLog:
 
                     # Make sure this fits file belongs to the correct instrument
                     try:
-                        fitsInstr = reduce(lambda memo, i: memo[i], self.instrAttr, headers)
+                        fitsInstr =functools.reduce(lambda memo, i: memo[i], self.instrAttr, headers)
                     except KeyError:
                         self.alertEntry( "Warning: " + str( self.instrAttr ) + " attribute not found for " + f)
                     else: 
@@ -375,7 +383,7 @@ class ObsLog:
                     # Insert record into the database
                     #try:
                     sys.stdout.write( "adding file "+str(f) + "\n")
-                    #print "header: "+str(fRecord)
+                    #print ("header: "+str(fRecord))
                     self.db.fits.insert( fRecord )
                     #except:
                     #    self.alertEntry("Warning: file %s has been skipped because of a bad header" % (str(f)))
