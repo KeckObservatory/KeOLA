@@ -15,7 +15,8 @@ smtpServer = "localhost"
 
 def check_if_running():
   for proc in psutil.process_iter():
-    cmdline = proc.cmdline
+    cmdline = proc.cmdline()
+    #print(cmdline)
     if len(cmdline)>1 and 'python' in cmdline[0] and 'dataMon.py' in cmdline[1] and 'supervisor' not in cmdline[1]:
         p = psutil.Process(proc.pid)
         status = str(p.status)
