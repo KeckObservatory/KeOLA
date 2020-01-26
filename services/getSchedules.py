@@ -83,15 +83,20 @@ def genLogs( d, db, errors ):
             log['oa'] = log['sa'] = 'UNKNOWN'
 
             # retrieve OA name
+            oas = []
             for staff in filter(
                     lambda nightstaff: (('oa' in nightstaff['Type']) and (nightstaff['TelNr'] == str(telescope))),
                     employees):
-                log['oa'] = staff['FirstName'] + " " + staff['LastName']
+                oas.append(staff['FirstName'] + " " + staff['LastName'])
+            log['oa'] = "/".join(oas)
+                #log['oa'] = staff['FirstName'] + " " + staff['LastName']
             # retrieve SA name
+            sas = []
             for staff in filter(
                     lambda nightstaff: (('sa' in nightstaff['Type']) and (nightstaff['TelNr'] == str(telescope))),
                     employees):
-                log['sa'] = staff['FirstName'] + " " + staff['LastName']
+                sas.append(staff['FirstName'] + " " + staff['LastName'])
+            log['sa'] = "/".join(sas)
 
             log['utcDate'] = datetime.utcnow()
             # retrieve protodirs structure
