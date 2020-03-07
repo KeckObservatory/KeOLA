@@ -137,7 +137,7 @@ class ObsLog:
         # Try to find the date of the last weather entry 
         lastWeather = self.db.entries.find({"logID":self.id, "type":"weather"}).sort([("utcDate",-1)]).limit(1)
 
-        if lastWeather.count() > 0:
+        if lastWeather.count_documents() > 0:
             # If it exists, store the date. 
             self.weatherUpdated = lastWeather[0]["utcDate"]
         else:
