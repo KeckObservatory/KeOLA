@@ -284,19 +284,14 @@ class ObsLog:
                 modOn = datetime.fromtimestamp( os.stat(f).st_mtime )
 
                 # Try to open the fits file in pyfits
+                logging.info("Attempting to add file %s" % (str(f)))
                 for t in range(3):
                     logging.info( "Try add number "+str(t))
                     try:
                         if self.missing_end_card:
-                            #fitsHdrs = pyfits.open(f, ignore_missing_end=True)
                             fitsHdrs = pyfits.getheader(f,ignore_missing_end=True)
                         else:
-                            #fitsHdrs = pyfits.open(f)
                             fitsHdrs = pyfits.getheader(f)
-                        #try:
-                        #   fitsHdrs.verify('fix')
-                        #except:
-                        #    pass
                     except UserWarning:
                         if t != 2:
                             logging.warning( "Truncation caught, retrying in 5 seconds")
