@@ -134,10 +134,11 @@ class ObsLog:
             startPoll = (sunset - timedelta( minutes=60 )).time()
             endPoll = (sunrise + timedelta( minutes=60 )).time()
 
-        # Try to find the date of the last weather entry 
-        lastWeather = self.db.entries.find({"logID":self.id, "type":"weather"}).sort([("utcDate",-1)]).limit(1)
+        # Try to find the date of the last weather entry
+        filter = {"logID":self.id, "type":"weather"}
+        lastWeather = self.db.entries.find(filter).sort([("utcDate",-1)]).limit(1)
 
-        if lastWeather.count_documents() > 0:
+        if len(lastWeather) > 0:
             # If it exists, store the date. 
             self.weatherUpdated = lastWeather[0]["utcDate"]
         else:
