@@ -50,4 +50,3 @@ if monitor_on == False:
     s.sendmail(emailFrom, [emailTo], msg.as_string())
     s.quit()
 
-
