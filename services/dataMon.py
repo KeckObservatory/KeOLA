@@ -151,7 +151,7 @@ class ObsLog:
             "title": alert,
             "logID": self.id,
             "utcDate": now }
-        self.db.entries.save( aEntry )
+        self.db.entries.insert_one( aEntry )
 
     def weatherEntry(self, weather):
         now = datetime.utcnow()
@@ -279,7 +279,7 @@ class ObsLog:
                     continue
                 # check file length:
                 if os.path.getsize(f) == 0:
-                    logging.warn('file %s has zero lengh. skipping for now...' % str(f))
+                    logging.warning('file %s has zero lengh. skipping for now...' % str(f))
                     continue
                 # Find the time of most recent modification
                 modOn = datetime.fromtimestamp( os.stat(f).st_mtime )
@@ -380,7 +380,7 @@ class ObsLog:
                     #try:
                     sys.stdout.write( "adding file "+str(f) + "\n")
                     #print ("header: "+str(fRecord))
-                    self.db.fits.insert( fRecord )
+                    self.db.fits.insert_one( fRecord )
                     #except:
                     #    self.alertEntry("Warning: file %s has been skipped because of a bad header" % (str(f)))
                     #    print "Skipping file "+str(f)
@@ -392,7 +392,7 @@ class ObsLog:
                         "directory": dir,
                         "utcDate": datetime.utcnow(),
                         "fitsID": fRecord["_id"] }
-                    self.db.entries.insert( fEntry )
+                    self.db.entries.insert_one( fEntry )
 
                     del fitsHdrs
 
