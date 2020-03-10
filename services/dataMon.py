@@ -27,6 +27,7 @@
 ################################################################
 
 import os, time, sys
+import shutil
 
 from datetime import datetime, timedelta, date
 try: 
@@ -287,8 +288,9 @@ class ObsLog:
                 # Try to open the fits file in pyfits
                 logging.info("Attempting to add file %s" % (str(f)))
                 for t in range(3):
-                    logging.info( "Try add number "+str(t))
+                    logging.info( "Try add number "+str(t+1))
                     try:
+                        time.sleep(5)
                         if self.missing_end_card:
                             fitsHdrs = pyfits.getheader(f,ignore_missing_end=True)
                         else:
